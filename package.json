@@ -12,8 +12,25 @@
     "ios-device": "react-native run-ios --device"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.14.2",
+    "@freakycoder/react-native-helpers": "^1.0.1",
+    "@freakycoder/react-native-material-textfield": "^1.0.0",
+    "@react-native-community/masked-view": "^0.1.11",
+    "axios": "^0.21.1",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint-import-resolver-babel-module": "^5.3.1",
     "react": "17.0.1",
-    "react-native": "0.64.1"
+    "react-native": "0.64.1",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-login-screen": "^2.1.4",
+    "react-native-reanimated": "^2.1.0",
+    "react-native-safe-area-context": "^3.2.0",
+    "react-native-screens": "^3.2.0",
+    "react-native-spinkit": "^1.5.1",
+    "react-navigation": "^4.4.4",
+    "react-navigation-stack": "^2.10.4",
+    "react-navigation-tabs": "^2.11.1",
+    "typescript": "^4.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
