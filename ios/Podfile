@@ -13,6 +13,8 @@ target 'carrotcartmobile' do
   )
 
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'carrotcartmobileTests' do
     inherit! :complete
     # Pods for testing
