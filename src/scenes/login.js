@@ -1,44 +1,41 @@
-import React from 'react';
-import {useState} from 'react';
+import React, {useState, Fragment} from 'react';
 import * as Colours from '_styles/colours';
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
+  Keyboard,
   KeyboardAvoidingView,
   ActivityIndicator,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import {Button} from '_atoms';
-import {createRef} from 'react';
+import ErrorMessage from '../components/atoms/ErrorMessage';
+import FormInput from '../components/atoms/FormInput';
+import * as yup from 'yup';
+import {Formik} from 'formik';
 import {loginUser} from '../services/auth';
 import Toast from 'react-native-toast-message';
 
-const LoginScreen = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [animating, setAnimating] = useState(false);
-  // const [errorText, setErrorText] = useState('');
+const initialFormValues = {
+  email: '',
+  password: '',
+};
 
-  const passwordInputRef = createRef();
+const loginSchema = yup.object().shape({
+  email: yup.string().required('Email address is required'),
+  password: yup.string().required('Password is required'),
+});
+
+const LoginScreen = ({navigation}) => {
+  const [animating, setAnimating] = useState(false);
 
   // Event handlers
-  const onLoginPressed = () => {
+  const submitForm = values => {
     setAnimating(true);
-    // setErrorText('');
-    if (!email) {
-      alert('Email required');
-      setAnimating(false);
-      return;
-    }
-    if (!password) {
-      alert('Password required');
-      setAnimating(false);
-      return;
-    }
-    loginUser(email, password)
+    Keyboard.dismiss();
+    loginUser(values.email, values.password)
       .then(loginResults => {
         Toast.show({
           type: loginResults.success ? 'success' : 'error',
@@ -47,8 +44,12 @@ const LoginScreen = ({navigation}) => {
           text2: loginResults.message,
         });
         setAnimating(false);
+        setTimeout(() => {
+          navigation.navigate('Home');
+        }, 1000);
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error(err))
+      .finally(() => setAnimating(false));
   };
 
   const onSignUpPressed = () => {
@@ -56,74 +57,72 @@ const LoginScreen = ({navigation}) => {
     navigation.push('Register');
   };
 
+  // TODO: Add reset password functionality
   const onForgotPressed = () => console.log('Password forgot');
 
   return (
     <View style={styles.container}>
-      <Toast ref={ref => Toast.setRef(ref)} />
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}>
-        <View>
-          <KeyboardAvoidingView enabled>
-            <View style={{alignItems: 'center'}}>
-              <Text style={styles.logo}>CarrotCart</Text>
-            </View>
-            <View style={styles.inputView}>
-              <TextInput
-                style={styles.inputText}
-                keyboardType="email-address"
-                placeholder="Email"
-                autoCapitalize="none"
-                placeholderTextColor={Colours.PLACEHOLDER}
-                onChangeText={text => setEmail(text)}
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  passwordInputRef.current && passwordInputRef.current.focus()
-                }
-              />
-            </View>
-            <View style={styles.inputView}>
-              <TextInput
-                secureTextEntry
-                ref={passwordInputRef}
-                style={styles.inputText}
-                autoCapitalize="none"
-                placeholder="Password"
-                placeholderTextColor={Colours.PLACEHOLDER}
-                onChangeText={text => setPassword(text)}
-              />
-            </View>
-            <View style={styles.buttonView}>
+      <SafeAreaView>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            alignContent: 'center',
+          }}>
+          <Toast ref={ref => Toast.setRef(ref)} />
+          <ActivityIndicator
+            size="small"
+            animating={animating}
+            color={Colours.WHITE}
+          />
+          <View>
+            <KeyboardAvoidingView enabled>
+              <View style={{alignItems: 'center'}}>
+                <Text style={styles.logo}>CarrotCart</Text>
+              </View>
+              <Formik
+                initialValues={initialFormValues}
+                onSubmit={values => submitForm(values)}
+                validationSchema={loginSchema}>
+                {({handleChange, handleSubmit, errors}) => (
+                  <Fragment>
+                    <FormInput
+                      name="email"
+                      placeholder="Email"
+                      onChangeText={handleChange('email')}
+                      keyboardType="email-address"
+                      autoCorrect={false}
+                    />
+                    <ErrorMessage error={errors.email} />
+                    <FormInput
+                      name="password"
+                      placeholder="Password"
+                      onChangeText={handleChange('password')}
+                      secureTextEntry
+                    />
+                    <ErrorMessage error={errors.password} />
+                    <Button
+                      onButtonPress={onForgotPressed}
+                      label="Forgot Password?"
+                    />
+                    <Button
+                      backgroundColor={Colours.BURNT_SIENNA}
+                      onButtonPress={handleSubmit}
+                      label="Log In"
+                      marginTop={30}
+                    />
+                  </Fragment>
+                )}
+              </Formik>
               <Button
-                backgroundColor={Colours.BURNT_SIENNA}
-                onButtonPress={onLoginPressed}
-                label="Log In"
-              />
-              <Button
-                backgroundColor={Colours.SKOBELOFF}
                 onButtonPress={onSignUpPressed}
-                label="Sign Up"
+                label="Don't have an account? Sign up"
               />
-            </View>
-            <Button
-              backgroundColor={null}
-              onButtonPress={onForgotPressed}
-              label="Forgot Password?"
-              marginTop={10}
-            />
-            <ActivityIndicator
-              size="small"
-              animating={animating}
-              color={Colours.WHITE}
-            />
-          </KeyboardAvoidingView>
-        </View>
-      </ScrollView>
+            </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };
@@ -139,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     fontSize: 36,
     color: Colours.BURNT_SIENNA,
     marginBottom: 20,
@@ -149,15 +148,14 @@ const styles = StyleSheet.create({
     height: 40,
     marginBottom: 20,
     paddingTop: 20,
-    paddingHorizontal: 15,
+    // paddingHorizontal: 15,
   },
   inputText: {
     height: 50,
     flex: 1,
-    color: Colours.PLACEHOLDER,
+    color: Colours.KOBE,
     backgroundColor: Colours.PERSIAN_GREEN,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingHorizontal: 15,
     borderRadius: 30,
     borderWidth: 1,
     borderColor: Colours.PERSIAN_GREEN,
