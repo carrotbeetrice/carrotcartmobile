@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {AUTH_API} from '_constants/api-services';
-import * as EncryptedStorage from '_utils/encrypted-storage';
+import * as Storage from '../utils/encrypted-storage';
 
 const createEndpoint = path => `${AUTH_API}${path}`;
 
@@ -15,7 +15,7 @@ const results = {
   message: '',
 };
 
-export const loginUser = async (email, password) => {
+export const loginUser = (email, password) => {
   const resultPromise = new Promise((resolve, reject) => {
     axios
       .post(
@@ -26,16 +26,15 @@ export const loginUser = async (email, password) => {
         },
         {validateStatus: status => status < 500},
       )
-      .then(response => {
+      .then(async response => {
         if (response.status === 200) {
-          // console.log(response.data);
+          const setPromiseArray = [];
+
           // Save tokens
-          // const jwt = response.data.jwt;
-          // EncryptedStorage.setItem('authToken', JSON.stringify(jwt.accessToken));
-          // EncryptedStorage.setItem(
-          //   'refreshToken',
-          //   JSON.stringify(jwt.refreshToken),
-          // );
+          const jwt = response.data.jwt;
+          console.log(jwt);
+          await Promise.resolve(Storage.setItem('accessToken', jwt.accessToken));
+          await Promise.resolve(Storage.setItem('refreshToken', jwt.refreshToken));
           results.success = true;
           results.message = 'Login success!';
           return resolve(results);

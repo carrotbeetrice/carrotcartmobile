@@ -1,44 +1,46 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-export const getItem = key => {
-  EncryptedStorage.getItem(key)
-    .then(item => {
-      if (!item) return null;
-      else return JSON.parse(item);
-    })
-    .catch(err => {
-      console.error(err);
-      throw err;
-    });
+export const getItem = async key => {
+  try {
+    const item = await EncryptedStorage.getItem(key);
+
+    if (item !== undefined) return JSON.parse(item);
+    else return null;
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-export const setItem = (key, item) => {
+export const setItem = async (key, item) => {
   if (!key) throw Error('Key cannot be null');
-  if (typeof item !== 'string')
-    throw Error('Object to be stored must be stringified first');
 
-  EncryptedStorage.setItem(key, item)
-    .then(() => true)
-    .catch(err => {
-      console.error(err);
-      return false;
-    });
+  try {
+    await EncryptedStorage.setItem(key, JSON.stringify(item));
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export const removeItem = key => {
-  EncryptedStorage.removeItem(key)
-    .then(() => true)
-    .catch(err => {
-      console.error(err);
-      return false;
-    });
+  const removePromise = new Promise(resolve => {
+    EncryptedStorage.removeItem(key)
+      .then(() => resolve(true))
+      .catch(err => {
+        console.error(err);
+        return resolve(false);
+      });
+  });
+  return Promise.resolve(removePromise);
 };
 
 export const clearStorage = () => {
-  EncryptedStorage.clear()
-    .then(() => true)
-    .catch(err => {
-      console.error(err);
-      return false;
-    });
+  const clearPromise = new Promise(resolve => {
+    EncryptedStorage.clear()
+      .then(() => resolve(true))
+      .catch(err => {
+        console.error(err);
+        return resolve(false);
+      });
+  });
+  return Promise.resolve(clearPromise);
 };

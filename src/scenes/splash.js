@@ -5,16 +5,16 @@ import * as Colours from '_styles/colours';
 import * as EncryptedStorage from '_utils/encrypted-storage';
 
 const SplashScreen = ({navigation}) => {
-  const [animating, setAnimating] = useState(true);
+  // const [animating, setAnimating] = useState(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setAnimating(false);
-      const authToken = EncryptedStorage.getItem('authToken');
-      console.log("Token: ", authToken);
-      navigation.push(!authToken ? 'Auth' : 'Home');
-    }, 3000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setAnimating(false);
+  //     const authToken = EncryptedStorage.getItem('authToken');
+  //     console.log("Token: ", authToken);
+  //     navigation.push(!authToken ? 'Auth' : 'App');
+  //   }, 3000);
+  // }, []);
 
   return (
     <View style={styles.container}>
@@ -25,7 +25,7 @@ const SplashScreen = ({navigation}) => {
       />
       <ActivityIndicator
         style={styles.activityIndicator}
-        animating={animating}
+        animating={true}
         color={Colours.PERSIAN_GREEN}
         size="large"
       />

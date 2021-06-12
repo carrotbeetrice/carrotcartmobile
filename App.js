@@ -1,112 +1,111 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, {useEffect, useMemo, useReducer} from 'react';
 
-import React from 'react';
-import {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import AuthContext from './src/components/context';
 
-const Section = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+import SplashScreen from './src/scenes/splash';
+
+import AuthStack from './src/navigations/AuthStack';
+import AppStack from './src/navigations/AppStack';
+
+import * as Storage from './src/utils/encrypted-storage';
+
+const initialLoginState = {
+  isLoading: true,
+  userName: null,
+  accessToken: null,
 };
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const loginReducer = (prevState, action) => {
+    switch (action.type) {
+      case 'RETRIEVE_TOKEN':
+        return {
+          ...prevState,
+          accessToken: action.accessToken,
+          isLoading: false,
+        };
+      case 'LOGIN':
+        return {
+          ...prevState,
+          userName: action.id,
+          accessToken: action.accessToken,
+          isLoading: false,
+        };
+      case 'LOGOUT':
+        return {
+          ...prevState,
+          userName: null,
+          accessToken: null,
+          isLoading: false,
+        };
+      case 'REGISTER':
+        return {
+          ...prevState,
+          userName: action.id,
+          accessToken: action.accessToken,
+          isLoading: false,
+        };
+    }
   };
 
+  const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
+
+  const authContext = useMemo(
+    () => ({
+      signIn: foundUser => {
+        Storage.getItem('accessToken').then(accessToken => {
+          console.log('Access token:', accessToken);
+          if (accessToken == null) throw Error('Token failed to save');
+          dispatch({
+            type: 'LOGIN',
+            id: foundUser,
+            accessToken: accessToken,
+          });
+        });
+      },
+      signOut: () => {
+        Storage.clearStorage().then(success => {
+          if (success) dispatch({type: 'LOGOUT'});
+          else console.log('Sign out failed');
+        });
+      },
+      signUp: () => {},
+    }),
+    [],
+  );
+
+  useEffect(() => {
+    setTimeout(() => {
+      Storage.getItem('accessToken')
+        .then(accessToken => {
+          console.log('Access token:', accessToken);
+          if (accessToken != null) {
+            dispatch({
+              type: 'RETRIEVE_TOKEN',
+              accessToken: accessToken,
+            });
+          } else {
+            dispatch({type: 'LOGOUT'});
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          dispatch({type: 'LOGOUT'});
+        });
+    }, 1000);
+  }, []);
+
+  if (loginState.isLoading) return <SplashScreen />;
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One :)">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits :)
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        {loginState.accessToken !== null ? <AppStack /> : <AuthStack />}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

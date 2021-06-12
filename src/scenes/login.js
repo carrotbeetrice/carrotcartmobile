@@ -18,6 +18,8 @@ import {Formik} from 'formik';
 import {loginUser} from '../services/auth';
 import Toast from 'react-native-toast-message';
 
+import AuthContext from '../components/context';
+
 const initialFormValues = {
   email: '',
   password: '',
@@ -31,11 +33,13 @@ const loginSchema = yup.object().shape({
 const LoginScreen = ({navigation}) => {
   const [animating, setAnimating] = useState(false);
 
+  const {signIn} = React.useContext(AuthContext);
+
   // Event handlers
-  const submitForm = values => {
+  const submitForm = async (values) => {
     setAnimating(true);
     Keyboard.dismiss();
-    loginUser(values.email, values.password)
+    await loginUser(values.email, values.password)
       .then(loginResults => {
         Toast.show({
           type: loginResults.success ? 'success' : 'error',
@@ -43,9 +47,11 @@ const LoginScreen = ({navigation}) => {
           text1: loginResults.success ? 'Success' : 'Log in failed',
           text2: loginResults.message,
         });
+        //TODO: Query for relevant user data (username and whatnot) from inventory API upon successful login
         setAnimating(false);
         setTimeout(() => {
-          navigation.navigate('Home');
+          // navigation.navigate('App', {screen: 'Home'});
+          signIn(values.email);
         }, 1000);
       })
       .catch(err => console.error(err))

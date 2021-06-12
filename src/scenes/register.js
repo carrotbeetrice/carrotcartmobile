@@ -18,6 +18,8 @@ import {Formik} from 'formik';
 import Toast from 'react-native-toast-message';
 import {registerUser} from '../services/auth';
 
+import AuthContext from '../components/context';
+
 const initialFormValues = {
   email: '',
   password: '',
@@ -49,6 +51,8 @@ const registrationSchema = yup.object().shape({
 const RegisterScreen = ({navigation}) => {
   const [animating, setAnimating] = useState(false);
 
+  const {signUp} = React.useContext(AuthContext);
+
   const onReturnPressed = () => {
     console.log('Back to log in...');
     navigation.pop();
@@ -59,17 +63,23 @@ const RegisterScreen = ({navigation}) => {
     Keyboard.dismiss();
     console.log(values);
     registerUser(values.email, values.password)
-    .then(loginResults => {
-      Toast.show({
-        type: loginResults.success ? 'success' : 'error',
-        position:'top',
-        text1: loginResults.success ? 'Registration success!' : 'Registration failed',
-        text2: loginResults.message,
+      .then(loginResults => {
+        Toast.show({
+          type: loginResults.success ? 'success' : 'error',
+          position: 'top',
+          text1: loginResults.success
+            ? 'Registration success!'
+            : 'Registration failed',
+          text2: loginResults.message,
+        });
+        setAnimating(false);
+        signUp();
+      })
+      .catch(err => console.error(err))
+      .finally(() => {
+        setAnimating(false);
+        signUp();
       });
-      // TODO: Auto redirect back to login page after successful registration
-    })
-    .catch(err => console.error(err))
-    .finally(() => setAnimating(false));
   };
 
   return (
@@ -82,12 +92,12 @@ const RegisterScreen = ({navigation}) => {
             justifyContent: 'center',
             alignContent: 'center',
           }}>
-            <Toast ref={ref => Toast.setRef(ref)}/>
-            <ActivityIndicator
-              size="small"
-              animating={animating}
-              color={Colours.WHITE}
-            />
+          <Toast ref={ref => Toast.setRef(ref)} />
+          <ActivityIndicator
+            size="small"
+            animating={animating}
+            color={Colours.WHITE}
+          />
           <View>
             <KeyboardAvoidingView enabled>
               <View style={{alignItems: 'center'}}>
