@@ -28,7 +28,6 @@ export const loginUser = (email, password) => {
       )
       .then(async response => {
         if (response.status === 200) {
-          const setPromiseArray = [];
 
           // Save tokens
           const jwt = response.data.jwt;
@@ -74,4 +73,8 @@ export const registerUser = async (email, password) => {
       })
       .catch(err => console.error(err));
   });
+};
+
+export const refreshToken = async () => {
+
 };

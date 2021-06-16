@@ -4,6 +4,10 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+// #ifdef RCT_DEV
+// #import <React/RCTDevLoadingView.h>
+// #endif
+
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -31,10 +35,28 @@ static void InitializeFlipper(UIApplication *application) {
   InitializeFlipper(application);
 #endif
 
+//   [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
+
+//   #if RCT_DEV
+//   [[ReactNativeNavigation getBridge] moduleForClass:[RCTDevLoadingView class]];
+// #endif
+  
+//   return YES;
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"carrotcartmobile"
                                             initialProperties:nil];
+// RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:jsCodeLocation
+//                                         moduleProvider:nil
+//                                         launchOptions:launchOptions];
+// #if RCT_DEV
+//   [bridge moduleForClass:[RCTDevLoadingView class]];
+// #endif
+//   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+//                                                    moduleName:@"Test"
+//                                             initialProperties:nil];
+
 
   if (@available(iOS 13.0, *)) {
       rootView.backgroundColor = [UIColor systemBackgroundColor];

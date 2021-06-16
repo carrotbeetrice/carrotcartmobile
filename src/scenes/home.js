@@ -1,28 +1,66 @@
 import React from 'react';
-import {SafeAreaView, Text} from 'react-native';
+import {
+  SafeAreaView,
+  Text,
+  ActivityIndicator,
+  View,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import {Button} from '_atoms';
-import * as Colours from '_styles/colours';
-import * as EncryptedStorage from '_utils/encrypted-storage';
-import AuthContext from '../components/context';
+import * as Colours from '../styles/colours';
+import {getAllCategories} from '../services/inventory';
 
-const HomeScreen = ({navigation}) => {
-  const {signOut} = React.useContext(AuthContext);
+const HomeScreen = () => {
+  const [animating, setAnimating] = React.useState(true);
+  const [categories, setCategories] = React.useState([]);
 
-  const onSignOut = () => {
-    signOut();
-    // navigation.navigate("Auth");
-  };
+  React.useEffect(() => {
+    setTimeout(() => {
+      getAllCategories()
+        .then(results => {
+          if (results.success) {
+            setCategories(results.data);
+          } else {
+            console.error(results.message);
+          }
+        })
+        .catch(err => console.error(err))
+        .finally(() => setAnimating(false));
+    }, 1000);
+  }, []);
 
   return (
-    <SafeAreaView>
-      <Text>Home Screen</Text>
-      <Button
-        backgroundColor={Colours.BURNT_SIENNA}
-        onButtonPress={onSignOut}
-        label="Sign Out"
-      />
-    </SafeAreaView>
+    <View style={styles.container}>
+      <SafeAreaView>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <ActivityIndicator
+            animating={animating}
+            size="large"
+            color={Colours.PERSIAN_GREEN}
+          />
+          {/* {categories.map(category => (
+            <Text>{category}</Text>
+          ))} */}
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  scrollView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  categorySection: {},
+});
