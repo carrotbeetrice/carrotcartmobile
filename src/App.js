@@ -16,8 +16,9 @@ import AuthContext from './components/context';
 import loginReducer from './config/reducer';
 
 import SplashScreen from './scenes/splash';
-import AuthNavigator from './navigations/AuthStack';
-import AppNavigator from '_navigations/AppNavigator';
+import AuthStack from './navigations/AuthStack';
+import AppStack from './navigations/AppStack';
+// import AppNavigator from '_navigations/AppNavigator';
 
 import * as Colours from './styles/colours';
 import * as Storage from './utils/encrypted-storage';
@@ -134,9 +135,9 @@ const App = () => {
       <AuthContext.Provider value={authContext}>
         <NavigationContainer theme={theme}>
           {loginState.accessToken !== null ? (
-            <AppNavigator />
+            <AppStack />
           ) : (
-            <AuthNavigator />
+            <AuthStack />
           )}
         </NavigationContainer>
       </AuthContext.Provider>

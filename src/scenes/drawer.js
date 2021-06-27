@@ -1,16 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {
-  useTheme,
-  // Avatar,
-  // Title,
-  // Caption,
-  // Paragraph,
-  Drawer,
-  // Text,
-  // TouchableRipple,
-  // Switch,
-} from 'react-native-paper';
+import {Drawer} from 'react-native-paper';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,7 +8,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AuthContext from '../components/context';
 
 const DrawerContent = props => {
-  const paperTheme = useTheme();
   const {signOut} = React.useContext(AuthContext);
 
   return (
@@ -65,7 +54,11 @@ const DrawerContent = props => {
             />
             <DrawerItem
               icon={({color, size}) => (
-                <Icon name="information-circle-outline" color={color} size={size} />
+                <Icon
+                  name="information-circle-outline"
+                  color={color}
+                  size={size}
+                />
               )}
               label="Support"
               onPress={() => {

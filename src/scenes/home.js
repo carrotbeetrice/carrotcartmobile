@@ -6,12 +6,14 @@ import {
   View,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import {Button} from '_atoms';
+import {Title} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
 import * as Colours from '../styles/colours';
 import {getAllCategories} from '../services/inventory';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [animating, setAnimating] = React.useState(true);
   const [categories, setCategories] = React.useState([]);
 
@@ -30,18 +32,33 @@ const HomeScreen = () => {
     }, 1000);
   }, []);
 
+  const onCategoryPress = category => {
+    console.log('category selected:', category);
+    navigation.navigate('Shop', {
+      category: category,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <ActivityIndicator
-            animating={animating}
-            size="large"
-            color={Colours.PERSIAN_GREEN}
-          />
-          {/* {categories.map(category => (
-            <Text>{category}</Text>
-          ))} */}
+          <Title style={styles.categoryViewTitle}>Shop categories</Title>
+          {animating ? (
+            <ActivityIndicator size="large" color={Colours.PERSIAN_GREEN} />
+          ) : (
+            <View style={styles.categoryView}>
+              {categories.map((category, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.categoryCard}
+                  onPress={() => onCategoryPress(category)}>
+                  <Icon name="help-circle-outline" size={25} />
+                  <Text style={styles.categoryText}>{category}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -62,5 +79,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
   },
-  categorySection: {},
+  categoryViewTitle: {
+    textAlign: 'center',
+  },
+  categoryView: {
+    margin: 10,
+    flex: 1,
+    flexDirection: 'column',
+    flexWrap: 'nowrap',
+    width: 300,
+  },
+  categoryCard: {
+    margin: 5,
+    padding: 10,
+    backgroundColor: Colours.WHITE,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  categoryText: {
+    fontSize: 18,
+    paddingLeft: 10,
+  },
 });

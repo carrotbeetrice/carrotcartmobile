@@ -1,8 +1,6 @@
 import React from 'react';
-// import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-// import SplashScreen from '_scenes/splash';
 import LoginScreen from '_scenes/login';
 import RegisterScreen from '_scenes/register';
 

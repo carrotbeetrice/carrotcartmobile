@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import DrawerContent from '_scenes/drawer';
 
+import ShopStack from './ShopStack';
 import HomeScreen from '_scenes/home';
 import ProfileScreen from '_scenes/profile';
 import CartScreen from '_scenes/cart';
