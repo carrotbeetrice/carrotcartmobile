@@ -1,28 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, StyleSheet, View, Image} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import * as Colours from '_styles/colours';
-import * as EncryptedStorage from '_utils/encrypted-storage';
+import React from 'react';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as Colours from '../styles/colours';
 
-const SplashScreen = ({navigation}) => {
-  // const [animating, setAnimating] = useState(true);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setAnimating(false);
-  //     const authToken = EncryptedStorage.getItem('authToken');
-  //     console.log("Token: ", authToken);
-  //     navigation.push(!authToken ? 'Auth' : 'App');
-  //   }, 3000);
-  // }, []);
+const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Icon name="cog" style={styles.logo} color={Colours.BURNT_SIENNA} /> */}
-      <Image
-        source={{uri: '_assets/images/carrot-solid.svg'}}
-        style={styles.logo}
-      />
+      <Icon name="cart-outline" color={Colours.BURNT_SIENNA} size={100}/>
       <ActivityIndicator
         style={styles.activityIndicator}
         animating={true}

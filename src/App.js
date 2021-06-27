@@ -21,6 +21,7 @@ import AppNavigator from '_navigations/AppNavigator';
 
 import * as Colours from './styles/colours';
 import * as Storage from './utils/encrypted-storage';
+import {requestNewToken, checkAccessToken} from './services/auth';
 
 const initialLoginState = {
   isLoading: true,
@@ -82,17 +83,41 @@ const App = () => {
   );
 
   useEffect(() => {
-    setTimeout(() => {
-      Storage.getItem('accessToken')
-        .then(accessToken => {
-          console.log('Access token:', accessToken);
-          if (accessToken != null) {
+    setTimeout(async () => {
+      const accessToken = await Storage.getItem('accessToken');
+      console.log(
+        'Retrieved access token from encrypted storage:',
+        accessToken,
+      );
+
+      checkAccessToken(accessToken)
+        .then(async isValidToken => {
+          if (isValidToken) {
             dispatch({
               type: 'RETRIEVE_TOKEN',
               accessToken: accessToken,
             });
           } else {
-            dispatch({type: 'LOGOUT'});
+            console.log('Invalid access token, requesting a new one...');
+            const refreshToken = await Storage.getItem('refreshToken');
+
+            requestNewToken(refreshToken)
+              .then(newToken => {
+                dispatch(
+                  newToken != null
+                    ? {
+                        type: 'RETRIEVE_TOKEN',
+                        accessToken: newToken,
+                      }
+                    : {
+                        type: 'LOGOUT',
+                      },
+                );
+              })
+              .catch(err => {
+                console.error(err);
+                dispatch({type: 'LOGOUT'});
+              });
           }
         })
         .catch(err => {
