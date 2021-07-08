@@ -4,8 +4,8 @@ import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
 import * as Colors from '../styles/colours';
 
 import AppNavigator from './AppNavigator';
-import ShopScreen from '_scenes/shop';
-import ProductScreen from '_scenes/product';
+import ShopScreen from '_scenes/shop/shop';
+import ProductScreen from '_scenes/shop/product';
 
 const Stack = createStackNavigator();
 

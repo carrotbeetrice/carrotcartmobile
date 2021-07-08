@@ -28,6 +28,7 @@
     "react-native": "0.64.1",
     "react-native-encrypted-storage": "^4.0.2",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-grid-component": "^2.0.1",
     "react-native-login-screen": "^2.1.4",
     "react-native-paper": "^4.9.1",
     "react-native-reanimated": "^2.1.0",

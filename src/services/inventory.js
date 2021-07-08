@@ -1,43 +1,33 @@
-import axios from 'axios';
-import {INVENTORY_API} from '../constants/api-services';
-
-const createEndpoint = path => `${INVENTORY_API}${path}`;
-
-const inventoryPaths = {
-  byCategory: '/products/category/',
-  byId: '/products',
-};
+import createAxiosInstance from '../utils/axios';
+import {INVENTORY_API, SHOPPING_API} from '../constants/api-services';
 
 const results = {
   success: false,
 };
 
-export const getAllCategories = () => {
-  const url = createEndpoint('/products/categories');
+export const getAllCategories = async () => {
+  const ax = await createAxiosInstance(SHOPPING_API);
 
   return new Promise((resolve, reject) => {
-    axios
-      .get(url)
+    ax.get('/category')
       .then(response => {
-        // console.log('Response status:', response.status);
         if (response.status === 200) {
           results.success = true;
           results.data = response.data;
         } else {
           results.message = 'Unable to load page at the moment';
         }
-        return reject(results);
+        return resolve(results);
       })
       .catch(err => console.error(err));
   });
 };
 
-export const getItemsByCategory = category => {
-  const url = `${createEndpoint(inventoryPaths.byCategory)}/${category}`;
+export const getItemsByCategory = async categoryId => {
+  const ax = await createAxiosInstance(SHOPPING_API);
 
   return new Promise((resolve, reject) => {
-    axios
-      .get(url)
+    ax.get(`/products/category/${categoryId}`)
       .then(response => {
         if (response.status === 200) {
           results.success = true;
@@ -52,12 +42,11 @@ export const getItemsByCategory = category => {
   });
 };
 
-export const getItemById = id => {
-  const url = `${createEndpoint(inventoryPaths.byId)}/${id}`;
+export const getItemById = async productId => {
+  const ax = await createAxiosInstance(SHOPPING_API);
 
   return new Promise((resolve, reject) => {
-    axios
-      .get(url)
+    ax.get(`/products/${productId}`)
       .then(response => {
         if (response.status === 200) {
           results.success = true;

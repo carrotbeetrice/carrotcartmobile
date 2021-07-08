@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Colours from '../styles/colours';
+import * as Colours from '../../styles/colours';
 import {
   View,
   Text,

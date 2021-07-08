@@ -2,15 +2,15 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import DrawerContent from '_scenes/drawer';
+import DrawerContent from '_scenes/app/drawer';
 
 import ShopStack from './ShopStack';
-import HomeScreen from '_scenes/home';
-import ProfileScreen from '_scenes/profile';
-import CartScreen from '_scenes/cart';
-import WishlistScreen from '_scenes/wishlist';
-import SettingsScreen from '_scenes/settings';
-import SupportScreen from '_scenes/support';
+import HomeScreen from '_scenes/app/home';
+import ProfileScreen from '_scenes/app/profile';
+import CartScreen from '_scenes/app/cart';
+import WishlistScreen from '_scenes/app/wishlist';
+import SettingsScreen from '_scenes/app/settings';
+import SupportScreen from '_scenes/app/support';
 
 import * as Colours from '../styles/colours';
 

@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import {Title} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-import * as Colours from '../styles/colours';
-import {getAllCategories} from '../services/inventory';
+import * as Colours from '../../styles/colours';
+import {getAllCategories} from '../../services/inventory';
 
 const HomeScreen = ({navigation}) => {
   const [animating, setAnimating] = React.useState(true);
@@ -22,6 +22,7 @@ const HomeScreen = ({navigation}) => {
       getAllCategories()
         .then(results => {
           if (results.success) {
+            // alert(results.data);
             setCategories(results.data);
           } else {
             console.error(results.message);
@@ -48,13 +49,13 @@ const HomeScreen = ({navigation}) => {
             <ActivityIndicator size="large" color={Colours.PERSIAN_GREEN} />
           ) : (
             <View style={styles.categoryView}>
-              {categories.map((category, index) => (
+              {categories.map((categoryObject) => (
                 <TouchableOpacity
-                  key={index}
+                  key={categoryObject.CategoryId}
                   style={styles.categoryCard}
-                  onPress={() => onCategoryPress(category)}>
-                  <Icon name="help-circle-outline" size={25} />
-                  <Text style={styles.categoryText}>{category}</Text>
+                  onPress={() => onCategoryPress(categoryObject.CategoryId)}>
+                  <Icon name={categoryObject.Icon} size={25} />
+                  <Text style={styles.categoryText}>{categoryObject.CategoryName}</Text>
                 </TouchableOpacity>
               ))}
             </View>

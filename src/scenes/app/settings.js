@@ -5,7 +5,7 @@ import {useTheme, Switch, TouchableRipple} from 'react-native-paper';
 import {Button} from '_atoms';
 import * as Colours from '_styles/colours';
 
-import AuthContext from '../components/context';
+import AuthContext from '../../components/context';
 
 const SettingsScreen = () => {
   const {signOut, toggleTheme} = React.useContext(AuthContext);

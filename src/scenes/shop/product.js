@@ -7,8 +7,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Card, Title, Paragraph, IconButton, Divider} from 'react-native-paper';
-import * as Colours from '../styles/colours';
-import {getItemById} from '../services/inventory';
+import * as Colours from '_styles/colours';
+import {getItemById} from '../../services/inventory';
 
 const ProductScreen = ({route}) => {
   const [animating, setAnimating] = React.useState(true);
@@ -39,7 +39,7 @@ const ProductScreen = ({route}) => {
             <Card style={styles.productCard}>
               <Card.Cover
                 style={styles.productImage}
-                source={{uri: productInfo.image}}
+                source={{uri: productInfo.Image}}
                 resizeMode="contain"
               />
               <Divider />
@@ -47,19 +47,20 @@ const ProductScreen = ({route}) => {
                 <IconButton
                   icon="heart-outline"
                   size={20}
-                  onPress={() => addToWishlist(productInfo.id)}
+                  onPress={() => addToWishlist(productInfo.ProductId)}
                 />
                 <IconButton
                   icon="cart-outline"
                   size={20}
-                  onPress={() => addToCart(productInfo.id)}
+                  onPress={() => addToCart(productInfo.ProductId)}
                 />
               </Card.Actions>
               <Card.Content>
                 <Title style={styles.productNameText}>
-                  {productInfo.title}
+                  {productInfo.Title}
                 </Title>
-                <Paragraph>{productInfo.description}</Paragraph>
+                <Paragraph>${productInfo.Price}</Paragraph>
+                <Paragraph>{productInfo.Description}</Paragraph>
               </Card.Content>
             </Card>
           )}

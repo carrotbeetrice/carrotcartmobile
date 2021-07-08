@@ -5,7 +5,7 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import AuthContext from '../components/context';
+import AuthContext from '../../components/context';
 
 const DrawerContent = props => {
   const {signOut} = React.useContext(AuthContext);

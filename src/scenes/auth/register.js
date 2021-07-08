@@ -10,15 +10,15 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import Button from '../components/atoms/Button';
-import ErrorMessage from '../components/atoms/ErrorMessage';
-import FormInput from '../components/atoms/FormInput';
+import Button from '../../components/atoms/Button';
+import ErrorMessage from '../../components/atoms/ErrorMessage';
+import FormInput from '../../components/atoms/FormInput';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import Toast from 'react-native-toast-message';
-import {registerUser} from '../services/auth';
+import {registerUser} from '../../services/auth';
 
-import AuthContext from '../components/context';
+import AuthContext from '../../components/context';
 
 const initialFormValues = {
   email: '',

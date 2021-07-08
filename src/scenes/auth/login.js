@@ -11,14 +11,14 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {Button} from '_atoms';
-import ErrorMessage from '../components/atoms/ErrorMessage';
-import FormInput from '../components/atoms/FormInput';
+import ErrorMessage from '../../components/atoms/ErrorMessage';
+import FormInput from '../../components/atoms/FormInput';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import {loginUser} from '../services/auth';
+import {loginUser} from '../../services/auth';
 import Toast from 'react-native-toast-message';
 
-import AuthContext from '../components/context';
+import AuthContext from '../../components/context';
 
 const initialFormValues = {
   email: '',

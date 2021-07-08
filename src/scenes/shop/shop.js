@@ -8,8 +8,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Card, Title, Paragraph} from 'react-native-paper';
-import * as Colours from '../styles/colours';
-import {getItemsByCategory} from '../services/inventory';
+import * as Colours from '_styles/colours';
+import {getItemsByCategory} from '../../services/inventory';
 
 const ShopScreen = ({route, navigation}) => {
   const [animating, setAnimating] = React.useState(true);
@@ -37,35 +37,35 @@ const ShopScreen = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          {animating ? (
-            <ActivityIndicator size="large" color={Colours.BURNT_SIENNA} />
-          ) : (
+        {animating ? (
+          <ActivityIndicator size="large" color={Colours.BURNT_SIENNA} />
+        ) : (
+          <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.productsView}>
               {products.map(product => (
                 <TouchableOpacity
-                  key={product.id}
-                  onPress={() => onProductPress(product.id)}>
+                  key={product.ProductId}
+                  onPress={() => onProductPress(product.ProductId)}>
                   <Card style={styles.productCard}>
                     <Card.Cover
                       style={styles.productImage}
-                      source={{uri: product.image}}
+                      source={{uri: product.Image}}
                       resizeMode="contain"
                     />
                     <Card.Content>
                       <Title style={styles.productNameText}>
-                        {product.title}
+                        {product.Title}
                       </Title>
                       <Paragraph style={styles.productPriceText}>
-                        ${product.price}
+                        ${product.Price}
                       </Paragraph>
                     </Card.Content>
                   </Card>
                 </TouchableOpacity>
               ))}
             </View>
-          )}
-        </ScrollView>
+          </ScrollView>
+        )}
       </SafeAreaView>
     </View>
   );
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   productsView: {
-    marginHorizontal: 30,
+    marginHorizontal: 10,
     marginVertical: 0,
   },
   productCard: {
-    marginVertical: 10,
+    margin: 10,
   },
   productImage: {
     padding: 10,
