@@ -36,7 +36,7 @@ const DrawerContent = props => {
                 <Icon name="home-outline" color={color} size={size} />
               )}
               label="Home"
-              onPress={() => props.navigation.navigate('Home')}
+              onPress={() => props.navigation.navigate('HomeMainScreen')}
             />
             <DrawerItem
               icon={({color, size}) => (

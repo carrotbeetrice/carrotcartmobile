@@ -2,38 +2,23 @@ import React from 'react';
 import {
   SafeAreaView,
   View,
-  Modal,
   FlatList,
   Text,
+  Image,
   TouchableOpacity,
   StyleSheet,
   Pressable,
-  RefreshControl,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
-import {Card, Title, Paragraph} from 'react-native-paper';
+import {Button, Card, Divider, IconButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Colours from '../../styles/colours';
 import {getWishlist} from '../../services/wishlist';
 
 const WishlistScreen = ({navigation}) => {
   const [animating, setAnimating] = React.useState(true);
-  const [modalVisible, setModalVisible] = React.useState(false);
-  // const [refreshing, setRefreshing] = React.useState(false);
   const [wishlist, setWishlist] = React.useState([]);
-
-  // const onRefresh = React.useCallback(async () => {
-  //   setAnimating(true);
-  //   try {
-  //     const results = await getWishlist();
-  //     if (results.success) setWishlist(results.data);
-  //     else console.log(results.message);
-  //   } catch(err) {
-  //     console.error(err);
-  //   } finally {
-  //     setAnimating(false);
-  //   }
-  // });
 
   React.useEffect(() => {
     getWishlist()
@@ -52,56 +37,64 @@ const WishlistScreen = ({navigation}) => {
     });
   };
 
+  const addToCart = productId => {
+    console.log(`Product ${productId} added to cart!`);
+  };
+
+  const removeFromWishlist = productId => {
+    console.log(`Product ${productId} removed from wishlist`);
+  };
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <Modal
-          transparent={true}
-          animationType="slide"
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(!modalVisible)}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text>Hello there</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
-                <Text>Hide modal</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
         {animating ? (
           <ActivityIndicator size="large" color={Colours.PERSIAN_GREEN} />
         ) : wishlist.length === 0 ? (
           <View style={styles.emptyWishlistSection}>
             <Text>Your wishlist is empty. Start shopping now!</Text>
-            <Icon name="cart" size={50} color={Colours.PERSIAN_GREEN}/>
+            <Icon name="cart" size={50} color={Colours.PERSIAN_GREEN} />
           </View>
         ) : (
           <FlatList
             data={wishlist}
             renderItem={({item}) => (
-              <TouchableOpacity
-                key={item.productid}
-                onPress={() => onProductPress(item.productid)}>
-                <Card style={styles.itemCard}>
-                  <Card.Cover
-                    style={styles.itemImage}
-                    source={{uri: item.image}}
-                    resizeMode="contain"
-                  />
-                  <Card.Content>
-                    <Title style={styles.itemNameText}>{item.title}</Title>
-                    <Paragraph style={styles.itemPriceText}>
-                      ${item.price}
-                    </Paragraph>
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
+              <View style={styles.itemCard} key={item.productid}>
+                <View style={styles.itemInfo}>
+                  <Image style={styles.itemImage} source={{uri: item.image}} />
+                  <View style={styles.itemText}>
+                    <Text style={styles.itemNameText} numberOfLines={2}>
+                      {item.title}
+                    </Text>
+                    <Text style={styles.itemPriceText}>${item.price}</Text>
+                  </View>
+                </View>
+                {/* <Divider /> */}
+                <View style={styles.actionRow}>
+                  <Card.Actions style={styles.actionIconButtonRow}>
+                    <IconButton
+                      icon="cart-plus"
+                      color="grey"
+                      size={25}
+                      onPress={() => addToCart(item.productid)}
+                      style={styles.actionIconButton}
+                    />
+                    <IconButton
+                      icon="delete-outline"
+                      color="grey"
+                      size={25}
+                      onPress={() => removeFromWishlist(item.productid)}
+                      style={styles.actionIconButton}
+                    />
+                  </Card.Actions>
+                  <TouchableOpacity
+                    onPress={() => onProductPress(item.productid)}>
+                    <Text style={styles.actionTextButton}>View Product</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             )}
             keyExtractor={item => item.productid}
-            // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
           />
         )}
       </SafeAreaView>
@@ -129,29 +122,8 @@ const styles = StyleSheet.create({
   },
   itemCard: {
     margin: 10,
-  },
-  itemImage: {
     padding: 10,
     backgroundColor: 'white',
-  },
-  itemNameText: {
-    fontSize: 16,
-  },
-  itemPriceText: {
-    fontSize: 14,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
     shadowColor: 'grey',
     shadowOffset: {
       width: 0,
@@ -161,15 +133,47 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  itemInfo: {
+    flexDirection: 'row',
+    alignContent: 'flex-start',
+    alignItems: 'flex-start',
   },
-  buttonClose: {
-    backgroundColor: '#2196F3',
+  itemImage: {
+    padding: 10,
+    backgroundColor: 'white',
+    resizeMode: 'contain',
+    height: 70,
+    width: 70,
+  },
+  itemText: {
+    marginLeft: 10,
+    width: '80%',
+  },
+  itemNameText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  itemPriceText: {
+    fontSize: 13,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  actionIconButtonRow: {
+    padding: 5,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  actionIconButton: {
+    margin: 0,
+  },
+  actionTextButton: {
+    marginHorizontal: 10,
+    color: 'grey'
   },
   emptyWishlistSection: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
 });

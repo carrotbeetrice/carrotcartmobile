@@ -11,11 +11,10 @@ const SettingsScreen = () => {
   const {signOut, toggleTheme} = React.useContext(AuthContext);
   const paperTheme = useTheme();
 
-  const onSignOut = () => signOut();
+  // const onSignOut = () => signOut();
 
   return (
     <SafeAreaView>
-      <Text>Settings Screen</Text>
       <TouchableRipple onPress={() => toggleTheme()}>
         <View style={styles.preference}>
           <Text>Dark Theme</Text>
@@ -24,11 +23,11 @@ const SettingsScreen = () => {
           </View>
         </View>
       </TouchableRipple>
-      <Button
+      {/* <Button
         backgroundColor={Colours.BURNT_SIENNA}
         onButtonPress={onSignOut}
         label="Sign Out"
-      />
+      /> */}
     </SafeAreaView>
   );
 };

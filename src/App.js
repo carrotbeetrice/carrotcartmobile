@@ -48,7 +48,7 @@ const App = () => {
     colors: {
       ...NavigationDarkTheme.colors,
       ...PaperDarkTheme.colors,
-      background: Colours.CHARCOAL,
+      // background: Colours.CHARCOAL,
       text: Colours.WHITE,
     },
   };

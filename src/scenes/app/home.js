@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   },
   categoryViewTitle: {
     textAlign: 'center',
+    marginVertical: 10,
   },
   categoryView: {
     margin: 10,

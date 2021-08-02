@@ -22,9 +22,9 @@ const ProfileScreen = () => {
     getProfile()
       .then(results => {
         if (results.success) {
-          console.log(results.data);
+          console.log('Customer data:', results.data);
           setDetails(results.data);
-        } else console.log(results.message);
+        } else console.debug(results.message);
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false));
@@ -39,15 +39,26 @@ const ProfileScreen = () => {
               <ActivityIndicator />
             ) : (
               <View>
-                <Avatar.Icon
-                  icon="account"
-                  size={50}
-                  color={Colours.WHITE}
-                  style={styles.avatar}
-                />
-                <View style={styles.username}>
-                  <Title style={styles.title}>John Doe</Title>
-                  <Caption style={styles.caption}>@johndoe</Caption>
+                <View style={styles.profileHeader}>
+                  <Avatar.Icon
+                    icon="account"
+                    size={60}
+                    color={Colours.WHITE}
+                    style={styles.avatar}
+                  />
+                  <View style={styles.profileHeaderText}>
+                    <Title style={styles.fullName}>{details.fullName}</Title>
+                    <Text style={styles.joinedOn}>
+                      Member since {details.joinedon.substring(0, 10)}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.mobileNumber}>
+                  <Text>Mobile number</Text>
+                  <Text>{details.mobileNumber}</Text>
+                </View>
+                <View style={styles.addressBook}>
+                  <Text>Addresses</Text>
                 </View>
               </View>
             )}
@@ -69,27 +80,39 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
-  avatar: {
-    backgroundColor: Colours.BURNT_SIENNA,
-  },
-  username: {
-    marginLeft: 15,
-    flexDirection: 'column',
-  },
-  title: {
-    fontSize: 16,
-    marginTop: 3,
-    fontWeight: 'bold',
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-  },
   profile: {
     // flexDirection: 'row',
     // marginTop: 15,
-    // paddingVertical: 12,
-    // paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+
+  profileHeader: {
+    marginVertical: 10,
+    flexDirection: 'row',
+    alignContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  avatar: {
+    backgroundColor: Colours.BURNT_SIENNA,
+  },
+  profileHeaderText: {
+    flexDirection: 'column',
+    marginLeft: 10,
+  },
+  fullName: {
+    fontSize: 14,
+    // marginTop: 3,
+    fontWeight: 'bold',
+  },
+  joinedOn: {
+    fontSize: 12,
+  },
+  mobileNumber: {
+    marginVertical: 10,
+  },
+  addressBook: {
+    marginVertical: 10,
   },
   actions: {},
 });
