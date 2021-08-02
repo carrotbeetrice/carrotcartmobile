@@ -15,7 +15,6 @@ import ErrorMessage from '../../components/atoms/ErrorMessage';
 import FormInput from '../../components/atoms/FormInput';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import Toast from 'react-native-toast-message';
 import {registerUser} from '../../services/auth';
 
 import AuthContext from '../../components/context';
@@ -58,28 +57,22 @@ const RegisterScreen = ({navigation}) => {
     navigation.pop();
   };
 
-  const submitForm = values => {
-    setAnimating(true);
-    Keyboard.dismiss();
-    console.log(values);
-    registerUser(values.email, values.password)
-      .then(loginResults => {
-        Toast.show({
-          type: loginResults.success ? 'success' : 'error',
-          position: 'top',
-          text1: loginResults.success
-            ? 'Registration success!'
-            : 'Registration failed',
-          text2: loginResults.message,
-        });
-        setAnimating(false);
-        signUp();
-      })
-      .catch(err => console.error(err))
-      .finally(() => {
-        setAnimating(false);
-        signUp();
-      });
+  const submitForm = async values => {
+    try {
+      setAnimating(true);
+      Keyboard.dismiss();
+      const registerResults = await registerUser(values.email, values.password);
+      alert(registerResults.message);
+      if (registerResults.success) {
+        setTimeout(() => {
+          signUp(values.email);
+        }, 1000);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAnimating(false);
+    }
   };
 
   return (
@@ -92,7 +85,6 @@ const RegisterScreen = ({navigation}) => {
             justifyContent: 'center',
             alignContent: 'center',
           }}>
-          <Toast ref={ref => Toast.setRef(ref)} />
           <ActivityIndicator
             size="small"
             animating={animating}

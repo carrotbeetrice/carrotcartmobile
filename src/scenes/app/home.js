@@ -31,7 +31,7 @@ const HomeScreen = ({navigation}) => {
         .catch(err => console.error(err))
         .finally(() => setAnimating(false));
     }, 1000);
-  }, []);
+  }, [categories]);
 
   const onCategoryPress = category => {
     console.log('category selected:', category);

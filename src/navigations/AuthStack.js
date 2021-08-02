@@ -7,7 +7,7 @@ import RegisterScreen from '_scenes/auth/register';
 const Stack = createStackNavigator();
 
 const AuthStack = ({navigation}) => (
-  <Stack.Navigator headerMode="none" initialRouteName="Login">
+  <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
     {/* <Stack.Screen name="Splash" component={SplashScreen} /> */}
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />

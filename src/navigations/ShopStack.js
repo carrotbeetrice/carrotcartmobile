@@ -7,7 +7,7 @@ import ShopScreen from '_scenes/shop/shop';
 const Stack = createStackNavigator();
 
 const ShopStack = () => (
-  <Stack.Navigator headerMode="none" initialRouteName="Home">
+  <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false}}>
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="Shop" component={ShopScreen} />
   </Stack.Navigator>

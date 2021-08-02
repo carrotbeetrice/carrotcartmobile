@@ -27,9 +27,10 @@ export const getItemsByCategory = async categoryId => {
   const ax = await createAxiosInstance(SHOPPING_API);
 
   return new Promise((resolve, reject) => {
-    ax.get(`/products/category/${categoryId}`)
+    ax.get(`/category/${categoryId}`)
       .then(response => {
         if (response.status === 200) {
+          // console.log(response.data);
           results.success = true;
           results.data = response.data;
           return resolve(results);

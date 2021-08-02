@@ -5,6 +5,7 @@ const loginReducer = (prevState, action) => {
         ...prevState,
         accessToken: action.accessToken,
         isLoading: false,
+        isNewUser: false,
       };
     case 'LOGIN':
       return {
@@ -12,6 +13,7 @@ const loginReducer = (prevState, action) => {
         userName: action.id,
         accessToken: action.accessToken,
         isLoading: false,
+        isNewUser: false,
       };
     case 'LOGOUT':
       return {
@@ -23,9 +25,10 @@ const loginReducer = (prevState, action) => {
     case 'REGISTER':
       return {
         ...prevState,
-        userName: action.id,
+        userName: null,
         accessToken: action.accessToken,
         isLoading: false,
+        isNewUser: true,
       };
   }
 };

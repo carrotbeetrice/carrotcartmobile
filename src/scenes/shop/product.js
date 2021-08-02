@@ -9,14 +9,29 @@ import {
 import {Card, Title, Paragraph, IconButton, Divider} from 'react-native-paper';
 import * as Colours from '_styles/colours';
 import {getItemById} from '../../services/inventory';
+import {addOrDeleteItem} from '../../services/wishlist';
 
 const ProductScreen = ({route}) => {
   const [animating, setAnimating] = React.useState(true);
   const [productInfo, setProductInfo] = React.useState({});
   const {productId} = route.params;
 
-  const addToWishlist = productId =>
-    alert(`Item ${productId} added to wishlist!`);
+  const addOrDeleteFromWishlist = async () => {
+    if (!productId) console.error('Missing productId!');
+
+    try {
+      const results = await addOrDeleteItem(productId, productInfo.inwishlist);
+
+      if (results.success) {
+        setProductInfo({...productInfo, inwishlist: !productInfo.inwishlist});
+        alert(results.message);
+      } else {
+        console.log(results.message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const addToCart = productId => alert(`Item ${productId} added to cart!`);
 
@@ -39,28 +54,29 @@ const ProductScreen = ({route}) => {
             <Card style={styles.productCard}>
               <Card.Cover
                 style={styles.productImage}
-                source={{uri: productInfo.Image}}
+                source={{uri: productInfo.image}}
                 resizeMode="contain"
               />
               <Divider />
               <Card.Actions>
                 <IconButton
-                  icon="heart-outline"
-                  size={20}
-                  onPress={() => addToWishlist(productInfo.ProductId)}
+                  icon={productInfo.inwishlist ? 'heart' : 'heart-outline'}
+                  color={productInfo.inwishlist ? 'red' : null}
+                  size={25}
+                  onPress={addOrDeleteFromWishlist}
                 />
                 <IconButton
                   icon="cart-outline"
-                  size={20}
-                  onPress={() => addToCart(productInfo.ProductId)}
+                  size={25}
+                  onPress={() => addToCart(productInfo.productid)}
                 />
               </Card.Actions>
               <Card.Content>
                 <Title style={styles.productNameText}>
-                  {productInfo.Title}
+                  {productInfo.title}
                 </Title>
-                <Paragraph>${productInfo.Price}</Paragraph>
-                <Paragraph>{productInfo.Description}</Paragraph>
+                <Paragraph>${productInfo.price}</Paragraph>
+                <Paragraph>{productInfo.description}</Paragraph>
               </Card.Content>
             </Card>
           )}

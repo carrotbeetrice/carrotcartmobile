@@ -13,7 +13,6 @@ const ShopStack = () => (
   <Stack.Navigator
     initialRouteName="Home"
     screenOptions={{
-      headerLeft: props => <HeaderBackButton {...props} tintColor="white" />,
       headerStyle: {
         backgroundColor: Colors.BURNT_SIENNA,
       },

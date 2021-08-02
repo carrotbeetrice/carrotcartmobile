@@ -21,6 +21,7 @@
           "_config": "./src/config"
         }
       }
-    ]
+    ],
+    ["module:react-native-dotenv"]
   ]
 }

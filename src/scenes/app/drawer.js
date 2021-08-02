@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import {Drawer} from 'react-native-paper';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
@@ -9,6 +9,22 @@ import AuthContext from '../../components/context';
 
 const DrawerContent = props => {
   const {signOut} = React.useContext(AuthContext);
+
+  const onSignOutPressed = () =>
+    Alert.alert('Signing out', 'Are you sure you want to sign out?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Sign out cancelled'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          console.log('Signing out...');
+          signOut();
+        },
+      },
+    ]);
 
   return (
     <View style={{flex: 1}}>
@@ -74,7 +90,7 @@ const DrawerContent = props => {
             <Icon name="exit-outline" color={color} size={size} />
           )}
           label="Sign Out"
-          onPress={signOut}
+          onPress={onSignOutPressed}
         />
       </Drawer.Section>
     </View>

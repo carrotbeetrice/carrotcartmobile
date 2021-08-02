@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {AUTH_API, SHOPPING_API} from '../constants/api-services';
+import createAxiosInstance from '../utils/axios';
 import * as Storage from '../utils/encrypted-storage';
 
 const createEndpoint = path => `${AUTH_API}${path}`;
@@ -62,9 +63,17 @@ export const registerUser = async (email, password) => {
         },
         {validateStatus: status => status < 500},
       )
-      .then(response => {
+      .then(async response => {
         if (response.status === 200) {
           console.log(response.data);
+          const jwt = response.data.jwt;
+          console.log(jwt);
+          await Promise.resolve(
+            Storage.setItem('accessToken', jwt.accessToken),
+          );
+          await Promise.resolve(
+            Storage.setItem('refreshToken', jwt.refreshToken),
+          );
           results.success = true;
           results.message = 'Please log in to your account';
           return resolve(results);
@@ -79,26 +88,23 @@ export const registerUser = async (email, password) => {
 };
 
 export const requestNewToken = async refreshToken => {
-  return new Promise((resolve, reject) => {
-    if (!refreshToken) return resolve(null);
+  if (!refreshToken) return null;
 
-    axios
-      .post(
-        createEndpoint(authPaths.token),
-        {
-          accessToken: refreshToken,
-        },
-        {validateStatus: status => status < 500},
-      )
+  const ax = await createAxiosInstance(AUTH_API);
+
+  return new Promise((resolve, reject) => {
+    ax.get(createEndpoint(authPaths.token), {
+      accessToken: refreshToken,
+    })
       .then(response => {
-        console.log('Result: ', response.data);
+        console.debug(`Status: ${response.status}, Payload:`, response.data);
         if (response.status === 200) {
           return resolve(response.data);
         } else {
-          return resolve(null);
+          return reject(null);
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => console.debug(err));
   });
 };
 

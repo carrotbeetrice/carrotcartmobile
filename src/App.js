@@ -18,10 +18,9 @@ import loginReducer from './config/reducer';
 import SplashScreen from './scenes/splash';
 import AuthStack from './navigations/AuthStack';
 import AppStack from './navigations/AppStack';
-// import AppNavigator from '_navigations/AppNavigator';
 
 import * as Colours from './styles/colours';
-import * as Storage from './utils/encrypted-storage';
+import {getItem, clearStorage} from './utils/encrypted-storage';
 import {requestNewToken, checkAccessToken} from './services/auth';
 
 const initialLoginState = {
@@ -61,9 +60,10 @@ const App = () => {
   const authContext = useMemo(
     () => ({
       signIn: foundUser => {
-        Storage.getItem('accessToken').then(accessToken => {
-          console.log('Access token:', accessToken);
-          if (accessToken == null) throw Error('Token failed to save');
+        getItem('accessToken').then(accessToken => {
+          console.debug('Access token:', accessToken);
+          if (accessToken == null)
+            throw Error('Login error: Token failed to save');
           dispatch({
             type: 'LOGIN',
             id: foundUser,
@@ -72,12 +72,28 @@ const App = () => {
         });
       },
       signOut: () => {
-        Storage.clearStorage().then(success => {
+        clearStorage().then(success => {
           if (success) dispatch({type: 'LOGOUT'});
-          else console.log('Sign out failed');
+          else console.debug('Sign out failed');
         });
       },
-      signUp: () => {},
+      signUp: () => {
+        getItem('accessToken')
+          .then(accessToken => {
+            if (accessToken == null)
+              throw Error('Registration error: Token failed to save');
+            dispatch({
+              type: 'REGISTER',
+              accessToken: accessToken,
+            });
+          })
+          .catch(err => {
+            console.debug(err);
+            dispatch({
+              type: 'LOGOUT',
+            });
+          });
+      },
       toggleTheme: () => setIsDarkTheme(isDarkTheme => !isDarkTheme),
     }),
     [],
@@ -85,46 +101,42 @@ const App = () => {
 
   useEffect(() => {
     setTimeout(async () => {
-      const accessToken = await Storage.getItem('accessToken');
-      console.log(
-        'Retrieved access token from encrypted storage:',
-        accessToken,
-      );
+      try {
+        const accessToken = await getItem('accessToken');
+        console.debug(
+          'Retrieved access token from encrypted storage:',
+          accessToken,
+        );
 
-      checkAccessToken(accessToken)
-        .then(async isValidToken => {
-          if (isValidToken) {
-            dispatch({
-              type: 'RETRIEVE_TOKEN',
-              accessToken: accessToken,
-            });
-          } else {
-            console.log('Invalid access token, requesting a new one...');
-            const refreshToken = await Storage.getItem('refreshToken');
+        const isValidToken = await checkAccessToken(accessToken);
 
-            requestNewToken(refreshToken)
-              .then(newToken => {
-                dispatch(
-                  newToken != null
-                    ? {
-                        type: 'RETRIEVE_TOKEN',
-                        accessToken: newToken,
-                      }
-                    : {
-                        type: 'LOGOUT',
-                      },
-                );
-              })
-              .catch(err => {
-                console.error(err);
-                dispatch({type: 'LOGOUT'});
-              });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          dispatch({type: 'LOGOUT'});
-        });
+        if (isValidToken) {
+          dispatch({type: 'RETRIEVE_TOKEN', accessToken: accessToken});
+        } else {
+          console.debug('Invalid access token, requesting a new one...');
+          const refreshToken = await getItem('refreshToken');
+          console.debug(
+            'Retrieved refresh token from encrypted storage:',
+            refreshToken,
+          );
+
+          const newAccessToken = await requestNewToken(refreshToken);
+
+          dispatch(
+            newAccessToken != null
+              ? {
+                  type: 'RETRIEVE_TOKEN',
+                  accessToken: newAccessToken,
+                }
+              : {
+                  type: 'LOGOUT',
+                },
+          );
+        }
+      } catch (err) {
+        console.debug(err);
+        dispatch({type: 'LOGOUT'});
+      }
     }, 1000);
   }, []);
 
@@ -134,11 +146,7 @@ const App = () => {
     <PaperProvider theme={theme}>
       <AuthContext.Provider value={authContext}>
         <NavigationContainer theme={theme}>
-          {loginState.accessToken !== null ? (
-            <AppStack />
-          ) : (
-            <AuthStack />
-          )}
+          {loginState.accessToken !== null ? <AppStack /> : <AuthStack />}
         </NavigationContainer>
       </AuthContext.Provider>
     </PaperProvider>

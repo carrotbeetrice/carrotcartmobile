@@ -10,6 +10,7 @@ const createAxiosInstance = async baseUrl => {
     headers: {
       Authorization: 'Bearer ' + accessToken,
     },
+    validateStatus: status => status < 500,
   });
 };
 
