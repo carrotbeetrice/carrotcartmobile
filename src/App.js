@@ -73,7 +73,10 @@ const App = () => {
       },
       signOut: () => {
         clearStorage().then(success => {
-          if (success) dispatch({type: 'LOGOUT'});
+          if (success) {
+            console.debug("Encrypted storage cleared.");
+            dispatch({type: 'LOGOUT'});
+          }
           else console.debug('Sign out failed');
         });
       },
@@ -113,25 +116,31 @@ const App = () => {
         if (isValidToken) {
           dispatch({type: 'RETRIEVE_TOKEN', accessToken: accessToken});
         } else {
-          console.debug('Invalid access token, requesting a new one...');
+          console.debug(
+            'Invalid/missing access token, requesting a new one...',
+          );
           const refreshToken = await getItem('refreshToken');
           console.debug(
             'Retrieved refresh token from encrypted storage:',
             refreshToken,
           );
 
-          const newAccessToken = await requestNewToken(refreshToken);
+          if (refreshToken == null) {
+            dispatch({type: 'LOGOUT'});
+          } else {
+            const newAccessToken = await requestNewToken(refreshToken);
 
-          dispatch(
-            newAccessToken != null
-              ? {
-                  type: 'RETRIEVE_TOKEN',
-                  accessToken: newAccessToken,
-                }
-              : {
-                  type: 'LOGOUT',
-                },
-          );
+            dispatch(
+              newAccessToken != null
+                ? {
+                    type: 'RETRIEVE_TOKEN',
+                    accessToken: newAccessToken,
+                  }
+                : {
+                    type: 'LOGOUT',
+                  },
+            );
+          }
         }
       } catch (err) {
         console.debug(err);

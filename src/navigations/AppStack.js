@@ -1,5 +1,5 @@
 import React from 'react';
-import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import * as Colors from '../styles/colours';
 

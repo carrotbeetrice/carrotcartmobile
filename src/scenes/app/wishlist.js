@@ -7,11 +7,9 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Pressable,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native';
-import {Button, Card, Divider, IconButton} from 'react-native-paper';
+import {Card, IconButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Colours from '../../styles/colours';
 import {getWishlist} from '../../services/wishlist';
@@ -28,7 +26,7 @@ const WishlistScreen = ({navigation}) => {
       })
       .catch(err => console.error(err))
       .finally(() => setAnimating(false));
-  }, [wishlist]);
+  }, []);
 
   const onProductPress = productId => {
     console.log('Product selected:', productId);
@@ -159,7 +157,7 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   actionIconButtonRow: {
     padding: 5,
@@ -171,7 +169,7 @@ const styles = StyleSheet.create({
   },
   actionTextButton: {
     marginHorizontal: 10,
-    color: 'grey'
+    color: 'grey',
   },
   emptyWishlistSection: {
     alignItems: 'center',

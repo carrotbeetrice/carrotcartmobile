@@ -1,8 +1,7 @@
 import React, {useState, Fragment} from 'react';
-import * as Colours from '_styles/colours';
+import * as Colours from '../../styles/colours';
 import {
   View,
-  Text,
   StyleSheet,
   Keyboard,
   KeyboardAvoidingView,
@@ -10,12 +9,11 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import Button from '../../components/atoms/Button';
+import {Button, Text} from 'react-native-paper';
 import ErrorMessage from '../../components/atoms/ErrorMessage';
 import FormInput from '../../components/atoms/FormInput';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import {registerUser} from '../../services/auth';
 
 import AuthContext from '../../components/context';
 
@@ -57,17 +55,15 @@ const RegisterScreen = ({navigation}) => {
     navigation.pop();
   };
 
-  const submitForm = async values => {
+  const submitForm = values => {
     try {
       setAnimating(true);
       Keyboard.dismiss();
-      const registerResults = await registerUser(values.email, values.password);
-      alert(registerResults.message);
-      if (registerResults.success) {
-        setTimeout(() => {
-          signUp(values.email);
-        }, 1000);
-      }
+      console.log('Next step of registration...');
+      navigation.push('OnBoarding', {
+        email: values.email,
+        password: values.password,
+      });
     } catch (err) {
       console.error(err);
     } finally {
@@ -99,43 +95,58 @@ const RegisterScreen = ({navigation}) => {
                 initialValues={initialFormValues}
                 onSubmit={values => submitForm(values)}
                 validationSchema={registrationSchema}>
-                {({handleChange, handleSubmit, errors}) => (
+                {({handleChange, handleSubmit, errors, values}) => (
                   <Fragment>
-                    <FormInput
-                      name="email"
-                      placeholder="Email"
-                      onChangeText={handleChange('email')}
-                      keyboardType="email-address"
-                      autoCorrect={false}
-                    />
-                    <ErrorMessage error={errors.email} />
-                    <FormInput
-                      name="password"
-                      placeholder="Password"
-                      onChangeText={handleChange('password')}
-                      secureTextEntry
-                    />
-                    <ErrorMessage error={errors.password} />
-                    <FormInput
-                      name="reenterPassword"
-                      placeholder="Re-enter password"
-                      onChangeText={handleChange('reenterPassword')}
-                      secureTextEntry
-                    />
-                    <ErrorMessage error={errors.reenterPassword} />
+                    <View style={styles.inputSection}>
+                      <FormInput
+                        name="email"
+                        label="Email"
+                        onChangeText={handleChange('email')}
+                        keyboardType="email-address"
+                        autoCorrect={false}
+                        value={values.email}
+                      />
+                      <ErrorMessage error={errors.email} />
+                    </View>
+                    <View style={styles.inputSection}>
+                      <FormInput
+                        name="password"
+                        label="Password"
+                        onChangeText={handleChange('password')}
+                        secureTextEntry
+                        value={values.password}
+                      />
+                      <ErrorMessage error={errors.password} />
+                    </View>
+                    <View style={styles.inputSection}>
+                      <FormInput
+                        name="reenterPassword"
+                        label="Re-enter password"
+                        onChangeText={handleChange('reenterPassword')}
+                        secureTextEntry
+                        value={values.reenterPassword}
+                      />
+                      <ErrorMessage error={errors.reenterPassword} />
+                    </View>
                     <Button
-                      backgroundColor={Colours.BURNT_SIENNA}
-                      onButtonPress={handleSubmit}
-                      label="Sign Up"
-                      marginTop={20}
-                    />
+                      style={styles.signUpButton}
+                      color={Colours.BURNT_SIENNA}
+                      dark={true}
+                      onPress={handleSubmit}
+                      uppercase={false}
+                      mode="contained">
+                      Sign Up
+                    </Button>
                   </Fragment>
                 )}
               </Formik>
               <Button
-                onButtonPress={onReturnPressed}
-                label="Already have an account? Log in here"
-              />
+                onPress={onReturnPressed}
+                mode="text"
+                uppercase={false}
+                color="white">
+                Already have an account? Log in here
+              </Button>
             </KeyboardAvoidingView>
           </View>
         </ScrollView>
@@ -149,16 +160,24 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colours.CHARCOAL,
+    backgroundColor: Colours.PERSIAN_GREEN,
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',
   },
   logo: {
-    // fontWeight: 'bold',
+    fontWeight: 'bold',
     fontSize: 32,
-    color: Colours.BURNT_SIENNA,
+    color: 'white',
     marginBottom: 20,
     padding: 10,
+  },
+  signUpButton: {
+    marginVertical: 10,
+    width: '80%',
+    alignSelf: 'center',
+  },
+  inputSection: {
+    marginVertical: 15,
   },
 });

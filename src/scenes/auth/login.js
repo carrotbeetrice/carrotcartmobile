@@ -2,7 +2,6 @@ import React, {useState, Fragment} from 'react';
 import * as Colours from '_styles/colours';
 import {
   View,
-  Text,
   StyleSheet,
   Keyboard,
   KeyboardAvoidingView,
@@ -10,7 +9,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import {Button} from '_atoms';
+import {Button, Text} from 'react-native-paper';
 import ErrorMessage from '../../components/atoms/ErrorMessage';
 import FormInput from '../../components/atoms/FormInput';
 import * as yup from 'yup';
@@ -40,11 +39,13 @@ const LoginScreen = ({navigation}) => {
       setAnimating(true);
       Keyboard.dismiss();
       const loginResults = await loginUser(values.email, values.password);
-      alert(loginResults.message);
+
       if (loginResults.success) {
         setTimeout(() => {
           signIn(values.email);
         }, 1000);
+      } else {
+        alert(loginResults.message);
       }
     } catch (err) {
       console.debug(err);
@@ -59,7 +60,7 @@ const LoginScreen = ({navigation}) => {
   };
 
   // TODO: Add reset password functionality
-  const onForgotPressed = () => console.log('Password forgot');
+  const onForgotPressed = () => alert('Password forgot');
 
   return (
     <View style={styles.container}>
@@ -85,40 +86,57 @@ const LoginScreen = ({navigation}) => {
                 initialValues={initialFormValues}
                 onSubmit={values => submitForm(values)}
                 validationSchema={loginSchema}>
-                {({handleChange, handleSubmit, errors}) => (
+                {({handleChange, handleSubmit, errors, values}) => (
                   <Fragment>
-                    <FormInput
-                      name="email"
-                      placeholder="Email"
-                      onChangeText={handleChange('email')}
-                      keyboardType="email-address"
-                      autoCorrect={false}
-                    />
-                    <ErrorMessage error={errors.email} />
-                    <FormInput
-                      name="password"
-                      placeholder="Password"
-                      onChangeText={handleChange('password')}
-                      secureTextEntry
-                    />
-                    <ErrorMessage error={errors.password} />
+                    <View style={styles.inputSection}>
+                      <FormInput
+                        name="email"
+                        label="Email"
+                        onChangeText={handleChange('email')}
+                        keyboardType="email-address"
+                        autoCorrect={false}
+                        value={values.email}
+                      />
+                      <ErrorMessage error={errors.email} />
+                    </View>
+                    <View style={styles.inputSection}>
+                      <FormInput
+                        name="password"
+                        label="Password"
+                        onChangeText={handleChange('password')}
+                        secureTextEntry
+                        value={values.password}
+                      />
+                      <ErrorMessage error={errors.password} />
+                    </View>
                     <Button
-                      onButtonPress={onForgotPressed}
-                      label="Forgot Password?"
-                    />
-                    <Button
-                      backgroundColor={Colours.BURNT_SIENNA}
-                      onButtonPress={handleSubmit}
-                      label="Log In"
-                      marginTop={30}
-                    />
+                      style={styles.loginButton}
+                      color={Colours.BURNT_SIENNA}
+                      dark={true}
+                      onPress={handleSubmit}
+                      uppercase={false}
+                      mode="contained">
+                      Log In
+                    </Button>
                   </Fragment>
                 )}
               </Formik>
-              <Button
-                onButtonPress={onSignUpPressed}
-                label="Don't have an account? Sign up"
-              />
+              <View style={styles.textButtonSection}>
+                <Button
+                  onPress={onForgotPressed}
+                  mode="text"
+                  uppercase={false}
+                  color="white">
+                  Forgot password?
+                </Button>
+                <Button
+                  onPress={onSignUpPressed}
+                  mode="text"
+                  uppercase={false}
+                  color="white">
+                  Don't have an account? Sign up
+                </Button>
+              </View>
             </KeyboardAvoidingView>
           </View>
         </ScrollView>
@@ -132,41 +150,27 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colours.CHARCOAL,
+    backgroundColor: Colours.PERSIAN_GREEN,
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',
   },
   logo: {
-    // fontWeight: 'bold',
+    fontWeight: 'bold',
     fontSize: 36,
-    color: Colours.BURNT_SIENNA,
+    color: 'white',
     marginBottom: 20,
   },
-  inputView: {
-    flexDirection: 'row',
-    height: 40,
-    marginBottom: 20,
-    paddingTop: 20,
-    // paddingHorizontal: 15,
+  inputSection: {
+    marginVertical: 20,
   },
-  inputText: {
-    height: 50,
-    flex: 1,
-    color: Colours.KOBE,
-    backgroundColor: Colours.PERSIAN_GREEN,
-    paddingHorizontal: 15,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: Colours.PERSIAN_GREEN,
+  loginButton: {
+    marginVertical: 10,
   },
-  buttonView: {
-    width: '80%',
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-around',
-    marginTop: 30,
-    marginBottom: 10,
-    alignSelf: 'center',
-    // marginVertical: 40,
+  secondaryButtonText: {
+    color: 'white',
+  },
+  textButtonSection: {
+    marginTop: 20,
   },
 });

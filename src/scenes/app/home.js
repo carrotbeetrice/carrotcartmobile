@@ -22,7 +22,6 @@ const HomeScreen = ({navigation}) => {
       getAllCategories()
         .then(results => {
           if (results.success) {
-            // alert(results.data);
             setCategories(results.data);
           } else {
             console.error(results.message);
@@ -31,7 +30,7 @@ const HomeScreen = ({navigation}) => {
         .catch(err => console.error(err))
         .finally(() => setAnimating(false));
     }, 1000);
-  }, [categories]);
+  }, []);
 
   const onCategoryPress = category => {
     console.log('category selected:', category);
@@ -49,13 +48,15 @@ const HomeScreen = ({navigation}) => {
             <ActivityIndicator size="large" color={Colours.PERSIAN_GREEN} />
           ) : (
             <View style={styles.categoryView}>
-              {categories.map((categoryObject) => (
+              {categories.map(categoryObject => (
                 <TouchableOpacity
                   key={categoryObject.CategoryId}
                   style={styles.categoryCard}
                   onPress={() => onCategoryPress(categoryObject.CategoryId)}>
                   <Icon name={categoryObject.Icon} size={25} />
-                  <Text style={styles.categoryText}>{categoryObject.CategoryName}</Text>
+                  <Text style={styles.categoryText}>
+                    {categoryObject.CategoryName}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>

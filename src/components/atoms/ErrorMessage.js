@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Colours from '../../styles/colours';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import {Text} from 'react-native-paper';
 
 const ErrorMessage = ({error}) => {
   if (!error) {

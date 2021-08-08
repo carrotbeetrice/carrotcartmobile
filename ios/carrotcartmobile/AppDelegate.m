@@ -1,12 +1,12 @@
 #import "AppDelegate.h"
 
+#ifdef RCT_DEV
+#import <React/RCTDevLoadingView.h>
+#endif
+
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-
-// #ifdef RCT_DEV
-// #import <React/RCTDevLoadingView.h>
-// #endif
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -50,12 +50,12 @@ static void InitializeFlipper(UIApplication *application) {
 // RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:jsCodeLocation
 //                                         moduleProvider:nil
 //                                         launchOptions:launchOptions];
-// #if RCT_DEV
-//   [bridge moduleForClass:[RCTDevLoadingView class]];
-// #endif
-//   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-//                                                    moduleName:@"Test"
-//                                             initialProperties:nil];
+#if RCT_DEV
+  [bridge moduleForClass:[RCTDevLoadingView class]];
+#endif
+  // RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+  //                                                  moduleName:@"Test"
+  //                                           initialProperties:nil];
 
 
   if (@available(iOS 13.0, *)) {
@@ -75,7 +75,8 @@ static void InitializeFlipper(UIApplication *application) {
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  // return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  return [NSURL URLWithString:[[[[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil] absoluteString] stringByAppendingString:@"&inlineSourceMap=true" ]];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif

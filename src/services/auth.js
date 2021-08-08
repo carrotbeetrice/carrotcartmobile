@@ -31,7 +31,6 @@ export const loginUser = (email, password) => {
         if (response.status === 200) {
           // Save tokens
           const jwt = response.data.jwt;
-          console.log(jwt);
           await Promise.resolve(
             Storage.setItem('accessToken', jwt.accessToken),
           );
@@ -39,7 +38,6 @@ export const loginUser = (email, password) => {
             Storage.setItem('refreshToken', jwt.refreshToken),
           );
           results.success = true;
-          results.message = 'Login success!';
           return resolve(results);
         } else {
           results.success = false;
@@ -75,7 +73,7 @@ export const registerUser = async (email, password) => {
             Storage.setItem('refreshToken', jwt.refreshToken),
           );
           results.success = true;
-          results.message = 'Please log in to your account';
+          results.message = response.statusText;
           return resolve(results);
         } else {
           results.success = false;
@@ -83,7 +81,34 @@ export const registerUser = async (email, password) => {
           return resolve(results);
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        results.success = false;
+        results.message = err.toString();
+        return reject(results);
+      });
+  });
+};
+
+export const createNewUser = async userDetails => {
+  const ax = await createAxiosInstance(SHOPPING_API);
+  return new Promise((resolve, reject) => {
+    ax.post('/customer', userDetails)
+      .then(response => {
+        if (response.status === 201) {
+          results.success = true;
+          results.message = response.statusText;
+          return resolve(results);
+        } else {
+          results.success = false;
+          results.message = response.data;
+          return resolve(results);
+        }
+      })
+      .catch(err => {
+        results.success = false;
+        results.message = err.toString();
+        return reject(results);
+      });
   });
 };
 

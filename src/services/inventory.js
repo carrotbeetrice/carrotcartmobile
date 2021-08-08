@@ -1,5 +1,5 @@
 import createAxiosInstance from '../utils/axios';
-import {INVENTORY_API, SHOPPING_API} from '../constants/api-services';
+import {SHOPPING_API} from '../constants/api-services';
 
 const results = {
   success: false,
