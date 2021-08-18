@@ -19,14 +19,20 @@ const WishlistScreen = ({navigation}) => {
   const [wishlist, setWishlist] = React.useState([]);
 
   React.useEffect(() => {
+    let isMounted = true;
     getWishlist()
       .then(results => {
-        if (results.success) setWishlist(results.data);
-        else console.log(results.message);
+        if (isMounted) {
+          if (results.success) setWishlist(results.data);
+          else console.log(results.message);
+        }
       })
-      .catch(err => console.error(err))
+      .catch(err => {
+        if (isMounted) console.error(err);
+      })
       .finally(() => setAnimating(false));
-  }, []);
+    return () => {isMounted = false};
+  }, [wishlist]);
 
   const onProductPress = productId => {
     console.log('Product selected:', productId);

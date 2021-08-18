@@ -23,3 +23,22 @@ export const getProfile = async () => {
       .catch(err => console.error(err));
   });
 };
+
+export const getAddressBook = async () => {
+  const ax = await createAxiosInstance(SHOPPING_API);
+
+  return new Promise((resolve, reject) => {
+    ax.get("/customer/addresses")
+    .then(response => {
+      if (response.status === 200) {
+        results.success = true;
+        results.data = response.data;
+      } else {
+        results.success = false;
+        results.message = response.statusText;
+      }
+      return resolve(results);
+    })
+    .catch(err => reject(err));
+  });
+}

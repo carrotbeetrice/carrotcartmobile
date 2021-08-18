@@ -6,6 +6,7 @@ import * as Colors from '../styles/colours';
 import AppNavigator from './AppNavigator';
 import ShopScreen from '_scenes/shop/shop';
 import ProductScreen from '_scenes/shop/product';
+import NewAddressScreen from '_scenes/app/user/new_address';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,11 @@ const ShopStack = () => (
     />
     <Stack.Screen name="Shop" component={ShopScreen} />
     <Stack.Screen name="Product" component={ProductScreen} />
+    <Stack.Screen
+      name="NewAddress"
+      component={NewAddressScreen}
+      options={{title: 'Add New Address', headerBackTitle: 'Back'}}
+    />
   </Stack.Navigator>
 );
 

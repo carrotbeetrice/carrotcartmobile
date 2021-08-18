@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Colours from '../../styles/colours';
+import * as Colours from '../../../styles/colours';
 import {
   View,
   Text,
@@ -9,14 +9,17 @@ import {
   ActivityIndicator,
   ScrollView,
   SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
-import {Avatar, Caption, Card, Title} from 'react-native-paper';
-import {getProfile} from '../../services/customer';
+import {Avatar, Caption, Card, Title, Button} from 'react-native-paper';
+import {getProfile} from '../../../services/customer';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [details, setDetails] = React.useState({});
+
+  const toAddressBook = () => navigation.navigate('Address');
 
   React.useEffect(() => {
     getProfile()
@@ -40,25 +43,46 @@ const ProfileScreen = () => {
             ) : (
               <View>
                 <View style={styles.profileHeader}>
-                  <Avatar.Icon
-                    icon="account"
-                    size={60}
-                    color={Colours.WHITE}
-                    style={styles.avatar}
-                  />
+                  {details.profilephotouri !== null &&
+                  details.profilephotouri !== '' ? (
+                    <Avatar.Image
+                      size={60}
+                      source={{uri: details.profilephotouri}}
+                      style={styles.avatar}
+                    />
+                  ) : (
+                    <Avatar.Icon
+                      icon="account"
+                      size={60}
+                      color={Colours.WHITE}
+                      style={styles.avatar}
+                    />
+                  )}
+
                   <View style={styles.profileHeaderText}>
                     <Title style={styles.fullName}>{details.fullName}</Title>
+                    <Text style={styles.username}>@{details.username}</Text>
                     <Text style={styles.joinedOn}>
                       Member since {details.joinedon.substring(0, 10)}
                     </Text>
                   </View>
                 </View>
-                <View style={styles.mobileNumber}>
+                <View style={styles.detailsSection}>
+                  <Text>Bio</Text>
+                  <Text>{details.bio}</Text>
+                </View>
+                <View style={styles.detailsSection}>
+                  <Text>Birthday</Text>
+                  <Text>{details.birthday.substring(0, 10)}</Text>
+                </View>
+                <View style={styles.detailsSection}>
                   <Text>Mobile number</Text>
                   <Text>{details.mobileNumber}</Text>
                 </View>
-                <View style={styles.addressBook}>
-                  <Text>Addresses</Text>
+                <View style={styles.detailsSection}>
+                  {/* <Button onPress={toAddressBook} mode="outlined">
+                    Address Book
+                  </Button> */}
                 </View>
               </View>
             )}
@@ -88,31 +112,35 @@ const styles = StyleSheet.create({
   },
 
   profileHeader: {
-    marginVertical: 10,
+    // marginVertical: 10,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignContent: 'flex-start',
     alignItems: 'flex-start',
   },
   avatar: {
     backgroundColor: Colours.BURNT_SIENNA,
+    // alignSelf: 'flex-start'
   },
   profileHeaderText: {
     flexDirection: 'column',
     marginLeft: 10,
   },
   fullName: {
-    fontSize: 14,
+    fontSize: 16,
     // marginTop: 3,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+  },
+  username: {
+    fontSize: 14,
+    fontStyle: 'italic',
   },
   joinedOn: {
-    fontSize: 12,
+    fontSize: 14,
   },
-  mobileNumber: {
+  detailsSection: {
     marginVertical: 10,
   },
-  addressBook: {
-    marginVertical: 10,
-  },
+  detailsText: {},
   actions: {},
 });

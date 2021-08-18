@@ -18,19 +18,22 @@ const HomeScreen = ({navigation}) => {
   const [categories, setCategories] = React.useState([]);
 
   React.useEffect(() => {
-    setTimeout(() => {
-      getAllCategories()
-        .then(results => {
-          if (results.success) {
-            setCategories(results.data);
-          } else {
-            console.error(results.message);
-          }
-        })
-        .catch(err => console.error(err))
-        .finally(() => setAnimating(false));
-    }, 1000);
-  }, []);
+    let isMounted = true;
+    getAllCategories()
+      .then(results => {
+        if (isMounted) {
+          if (results.success) setCategories(results.data);
+          else console.log(results.message);
+        }
+      })
+      .catch(err => {
+        if (isMounted) console.error(err);
+      })
+      .finally(() => setAnimating(false));
+    return () => {
+      isMounted = false;
+    };
+  }, [categories]);
 
   const onCategoryPress = category => {
     console.log('category selected:', category);

@@ -38,7 +38,7 @@ const App = () => {
     colors: {
       ...NavigationDefaultTheme.colors,
       ...PaperDefaultTheme.colors,
-      // background: Colours.WHITE,
+      background: Colours.WHITE,
     },
   };
 
