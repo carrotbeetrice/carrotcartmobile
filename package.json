@@ -22,8 +22,6 @@
     "@react-navigation/native": "^6.0.0",
     "@react-navigation/stack": "^6.0.0",
     "axios": "^0.21.1",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "eslint-import-resolver-babel-module": "^5.3.1",
     "formik": "^2.2.8",
     "react": "17.0.1",
     "react-native": "0.64.1",

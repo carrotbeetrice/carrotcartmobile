@@ -1,5 +1,5 @@
 import React, {useState, Fragment} from 'react';
-import * as Colours from '_styles/colours';
+import * as Colours from '../../styles/colours';
 import {
   View,
   StyleSheet,

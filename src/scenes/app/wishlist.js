@@ -31,15 +31,16 @@ const WishlistScreen = ({navigation}) => {
         if (isMounted) console.error(err);
       })
       .finally(() => setAnimating(false));
-    return () => {isMounted = false};
+    return () => {
+      isMounted = false;
+    };
   }, [wishlist]);
 
-  const onProductPress = productId => {
-    console.log('Product selected:', productId);
+  const onProductPress = productId =>
     navigation.navigate('Product', {
       productId: productId,
+      isPreview: true,
     });
-  };
 
   const addToCart = productId => {
     console.log(`Product ${productId} added to cart!`);
@@ -64,16 +65,21 @@ const WishlistScreen = ({navigation}) => {
             data={wishlist}
             renderItem={({item}) => (
               <View style={styles.itemCard} key={item.productid}>
-                <View style={styles.itemInfo}>
-                  <Image style={styles.itemImage} source={{uri: item.image}} />
-                  <View style={styles.itemText}>
-                    <Text style={styles.itemNameText} numberOfLines={2}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.itemPriceText}>${item.price}</Text>
+                <TouchableOpacity
+                  onPress={() => onProductPress(item.productid)}>
+                  <View style={styles.itemInfo}>
+                    <Image
+                      style={styles.itemImage}
+                      source={{uri: item.image}}
+                    />
+                    <View style={styles.itemText}>
+                      <Text style={styles.itemNameText} numberOfLines={2}>
+                        {item.title}
+                      </Text>
+                      <Text style={styles.itemPriceText}>${item.price}</Text>
+                    </View>
                   </View>
-                </View>
-                {/* <Divider /> */}
+                </TouchableOpacity>
                 <View style={styles.actionRow}>
                   <Card.Actions style={styles.actionIconButtonRow}>
                     <IconButton
@@ -91,10 +97,6 @@ const WishlistScreen = ({navigation}) => {
                       style={styles.actionIconButton}
                     />
                   </Card.Actions>
-                  <TouchableOpacity
-                    onPress={() => onProductPress(item.productid)}>
-                    <Text style={styles.actionTextButton}>View Product</Text>
-                  </TouchableOpacity>
                 </View>
               </View>
             )}
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
   itemInfo: {
     flexDirection: 'row',
     alignContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   itemImage: {
     padding: 10,

@@ -4,10 +4,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 import * as Colors from '../styles/colours';
 
 import AppNavigator from './AppNavigator';
-import ShopScreen from '_scenes/shop/shop';
-import ProductScreen from '_scenes/shop/product';
-import AddressFormScreen from '_scenes/app/user/address_form';
-import AddToCartScreen from '_scenes/shop/add_to_cart';
+import ShopScreen from '../scenes/shop/shop';
+import ProductScreen from '../scenes/shop/product';
+import AddressFormScreen from '../scenes/app/user/address_form';
+import AddToCartScreen from '../scenes/shop/add_to_cart';
 
 const Stack = createStackNavigator();
 
@@ -29,7 +29,14 @@ const ShopStack = () => (
         }}
       />
       <Stack.Screen name="Shop" component={ShopScreen} />
-      <Stack.Screen name="Product" component={ProductScreen} />
+      <Stack.Screen
+        name="Product"
+        component={ProductScreen}
+        options={({route}) => ({
+          presentation: route.params.isPreview ? 'modal' : 'card',
+          headerBackTitle: 'Back',
+        })}
+      />
     </Stack.Group>
     <Stack.Group
       screenOptions={{presentation: 'modal', headerBackTitle: 'Back'}}>
@@ -43,9 +50,9 @@ const ShopStack = () => (
       <Stack.Screen
         name="AddToCart"
         component={AddToCartScreen}
-        options={{
-          headerTitle: 'Add Item to Cart',
-        }}
+        options={({route}) => ({
+          headerTitle: route.params.headerTitle,
+        })}
       />
     </Stack.Group>
   </Stack.Navigator>

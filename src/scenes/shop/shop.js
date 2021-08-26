@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import {Card, Title, Paragraph} from 'react-native-paper';
-import * as Colours from '_styles/colours';
+import * as Colours from '../../styles/colours';
 import {getItemsByCategory} from '../../services/inventory';
 
 const ShopScreen = ({route, navigation}) => {
@@ -35,12 +35,10 @@ const ShopScreen = ({route, navigation}) => {
     };
   }, [products]);
 
-  const onProductPress = productId => {
-    console.log('Product selected:', productId);
+  const onProductPress = productId =>
     navigation.navigate('Product', {
       productId: productId,
     });
-  };
 
   return (
     <View style={styles.container}>
@@ -51,8 +49,6 @@ const ShopScreen = ({route, navigation}) => {
           <FlatList
             data={products}
             keyExtractor={item => item.ProductId}
-            // horizontal={false}
-            // numColumns={2}
             renderItem={({item}) => (
               <TouchableOpacity
                 key={item.ProductId}
@@ -88,11 +84,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
   },
-  // scrollView: {
-  //   flexDirection: 'column',
-  //   justifyContent: 'center',
-  //   alignContent: 'center',
-  // },
   productsView: {
     marginHorizontal: 10,
     marginVertical: 0,
@@ -100,8 +91,6 @@ const styles = StyleSheet.create({
   productCard: {
     marginVertical: 10,
     marginHorizontal: 20,
-    // width: 150,
-    // height: 100,
   },
   productImage: {
     padding: 10,

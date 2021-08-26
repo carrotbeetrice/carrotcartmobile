@@ -2,14 +2,14 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import DrawerContent from '_scenes/app/drawer';
+import DrawerContent from '../scenes/app/drawer';
 
-import HomeScreen from '_scenes/app/home';
-// import ProfileScreen from '_scenes/app/user/profile';
-import CartScreen from '_scenes/app/cart';
-import WishlistScreen from '_scenes/app/wishlist';
-import SettingsScreen from '_scenes/app/settings';
-import SupportScreen from '_scenes/app/support';
+import HomeScreen from '../scenes/app/home';
+// import ProfileScreen from '../scenes/app/user/profile';
+import CartScreen from '../scenes/app/cart';
+import WishlistScreen from '../scenes/app/wishlist';
+import SettingsScreen from '../scenes/app/settings';
+import SupportScreen from '../scenes/app/support';
 
 import UserNavigator from './UserNavigator';
 

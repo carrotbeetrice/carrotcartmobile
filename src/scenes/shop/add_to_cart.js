@@ -12,12 +12,8 @@ import {
 } from 'react-native';
 import {Button} from 'react-native-paper';
 import {BURNT_SIENNA} from '../../styles/colours';
-// import * as yup from 'yup';
+import {addToCart} from '../../services/cart';
 import {Formik} from 'formik';
-
-const initialFormValues = {
-  quantity: 1,
-};
 
 // const addItemSchema = yup.object().shape({
 //   quantity: yup
@@ -26,14 +22,32 @@ const initialFormValues = {
 // });
 
 const AddToCartScreen = ({route, navigation}) => {
+  const {productInfo} = route.params;
+  const initialFormValues = {
+    quantity: productInfo.quantity ? productInfo.quantity : 1,
+  };
+
   const [quantity, setQuantity] = React.useState(initialFormValues.quantity);
   const [animating, setAnimating] = React.useState(false);
-  const {productInfo} = route.params;
 
   const handleAddToCart = () => {
-    console.log(
-      `Adding ${quantity} of item ${productInfo.productid} to cart...`,
-    );
+    setAnimating(true);
+    addToCart(productInfo.productid, quantity)
+      .then(result => {
+        setAnimating(false);
+        if (result.success) {
+          Alert.alert('Success', 'Item successfully added to cart!', [
+            {
+              text: 'OK',
+              onPress: () => navigation.goBack(),
+              style: 'default',
+            },
+          ]);
+        } else {
+          alert(result.message);
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const decrementQuantity = () => {
@@ -46,7 +60,6 @@ const AddToCartScreen = ({route, navigation}) => {
     <View style={styles.container}>
       <SafeAreaView>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          {/* <Text>Add to Cart Screen</Text> */}
           <KeyboardAvoidingView enabled>
             <View style={styles.itemCard}>
               <View style={styles.itemInfo}>
@@ -66,7 +79,7 @@ const AddToCartScreen = ({route, navigation}) => {
               initialValues={initialFormValues}
               onSubmit={handleAddToCart}
               //validationSchema={addItemSchema}>
-              >
+            >
               {({handleSubmit, setFieldValue}) => (
                 <Fragment>
                   <View style={styles.inputSection}>
@@ -131,15 +144,6 @@ const styles = StyleSheet.create({
   itemCard: {
     margin: 10,
     padding: 10,
-    // backgroundColor: 'white',
-    // shadowColor: 'grey',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 4,
-    // elevation: 5,
   },
   itemInfo: {
     flexDirection: 'row',
@@ -168,14 +172,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 10,
     marginHorizontal: 10,
-    // justifyContent: 'space-between',
     alignItems: 'center',
   },
   quantityPicker: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    // margin: 10,
   },
   quantityPickerText: {
     marginHorizontal: 10,

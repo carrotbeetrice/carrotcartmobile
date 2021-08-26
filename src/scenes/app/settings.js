@@ -2,8 +2,7 @@ import React from 'react';
 import {SafeAreaView, View, Text, StyleSheet} from 'react-native';
 
 import {useTheme, Switch, TouchableRipple} from 'react-native-paper';
-import {Button} from '_atoms';
-import * as Colours from '_styles/colours';
+import * as Colours from '../../styles/colours';
 
 import AuthContext from '../../components/context';
 

@@ -41,3 +41,21 @@ export const addToCart = async (productId, quantity) => {
       .catch(err => reject(err));
   });
 };
+
+export const deleteFromCart = async productId => {
+  const ax = await createAxiosInstance(SHOPPING_API);
+
+  return new Promise((resolve, reject) => {
+    ax.delete(`/cart/${productId}`)
+      .then(response => {
+        if (response.status === 200) {
+          results.success = true;
+        } else {
+          results.success = false;
+          results.message = response.statusText;
+        }
+        return resolve(results);
+      })
+      .catch(err => reject(err));
+  });
+};

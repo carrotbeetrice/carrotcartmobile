@@ -14,7 +14,7 @@ import {addOrDeleteItem} from '../../services/wishlist';
 const ProductScreen = ({route, navigation}) => {
   const [animating, setAnimating] = React.useState(true);
   const [productInfo, setProductInfo] = React.useState({});
-  const {productId} = route.params;
+  const {productId, isPreview} = route.params;
 
   const addOrDeleteFromWishlist = async () => {
     if (!productId) console.error('Missing productId!');
@@ -33,12 +33,10 @@ const ProductScreen = ({route, navigation}) => {
     }
   };
 
-  //TODO: Add to cart functionality
-  const addToCart = productId => {
-    console.log(`Adding item ${productId} to cart...`);
-    // console.log('Item info:', productInfo);
+  const addToCart = () => {
     navigation.navigate('AddToCart', {
       productInfo: productInfo,
+      headerTitle: 'Add Item to Cart',
     });
   };
 
@@ -65,19 +63,24 @@ const ProductScreen = ({route, navigation}) => {
                 resizeMode="contain"
               />
               <Divider />
-              <Card.Actions>
-                <IconButton
-                  icon={productInfo.inwishlist ? 'heart' : 'heart-outline'}
-                  color={productInfo.inwishlist ? 'red' : null}
-                  size={25}
-                  onPress={addOrDeleteFromWishlist}
-                />
-                <IconButton
-                  icon="cart-outline"
-                  size={25}
-                  onPress={() => addToCart(productInfo.productid)}
-                />
-              </Card.Actions>
+              {isPreview ? (
+                <></>
+              ) : (
+                <Card.Actions>
+                  <IconButton
+                    icon={productInfo.inwishlist ? 'heart' : 'heart-outline'}
+                    color={productInfo.inwishlist ? 'red' : null}
+                    size={25}
+                    onPress={addOrDeleteFromWishlist}
+                  />
+                  <IconButton
+                    icon="cart-outline"
+                    size={25}
+                    onPress={addToCart}
+                  />
+                </Card.Actions>
+              )}
+
               <Card.Content>
                 <Title style={styles.productNameText}>
                   {productInfo.title}
