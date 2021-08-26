@@ -70,12 +70,6 @@ export const registerUser = async (email, password) => {
             Promise.resolve(Storage.setItem('accessToken', jwt.accessToken)),
             Promise.resolve(Storage.setItem('refreshToken', jwt.refreshToken)),
           ]);
-          // await Promise.resolve(
-          //   Storage.setItem('accessToken', jwt.accessToken),
-          // );
-          // await Promise.resolve(
-          //   Storage.setItem('refreshToken', jwt.refreshToken),
-          // );
           results.success = true;
           results.message = response.statusText;
           return resolve(results);

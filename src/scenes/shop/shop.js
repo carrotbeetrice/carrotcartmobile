@@ -4,8 +4,8 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
 import {Card, Title, Paragraph} from 'react-native-paper';
 import * as Colours from '_styles/colours';
@@ -17,15 +17,23 @@ const ShopScreen = ({route, navigation}) => {
   const {category} = route.params;
 
   React.useEffect(() => {
+    let isMounted = true;
     getItemsByCategory(category)
       .then(results => {
-        if (results.success) {
-          setProducts(results.data);
+        if (isMounted) {
+          if (results.success) {
+            setProducts(results.data);
+          }
         }
       })
-      .catch(err => console.error(err))
+      .catch(err => {
+        if (isMounted) console.error(err);
+      })
       .finally(() => setAnimating(false));
-  }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, [products]);
 
   const onProductPress = productId => {
     console.log('Product selected:', productId);
@@ -40,31 +48,31 @@ const ShopScreen = ({route, navigation}) => {
         {animating ? (
           <ActivityIndicator size="large" color={Colours.BURNT_SIENNA} />
         ) : (
-          <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.productsView}>
-              {products.map(product => (
-                <TouchableOpacity
-                  key={product.ProductId}
-                  onPress={() => onProductPress(product.ProductId)}>
-                  <Card style={styles.productCard}>
-                    <Card.Cover
-                      style={styles.productImage}
-                      source={{uri: product.Image}}
-                      resizeMode="contain"
-                    />
-                    <Card.Content>
-                      <Title style={styles.productNameText}>
-                        {product.Title}
-                      </Title>
-                      <Paragraph style={styles.productPriceText}>
-                        ${product.Price}
-                      </Paragraph>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+          <FlatList
+            data={products}
+            keyExtractor={item => item.ProductId}
+            // horizontal={false}
+            // numColumns={2}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                key={item.ProductId}
+                onPress={() => onProductPress(item.ProductId)}>
+                <Card style={styles.productCard}>
+                  <Card.Cover
+                    style={styles.productImage}
+                    source={{uri: item.Image}}
+                    resizeMode="contain"
+                  />
+                  <Card.Content>
+                    <Title style={styles.productNameText}>{item.Title}</Title>
+                    <Paragraph style={styles.productPriceText}>
+                      ${item.Price}
+                    </Paragraph>
+                  </Card.Content>
+                </Card>
+              </TouchableOpacity>
+            )}
+          />
         )}
       </SafeAreaView>
     </View>
@@ -80,17 +88,20 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
   },
-  scrollView: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
+  // scrollView: {
+  //   flexDirection: 'column',
+  //   justifyContent: 'center',
+  //   alignContent: 'center',
+  // },
   productsView: {
     marginHorizontal: 10,
     marginVertical: 0,
   },
   productCard: {
-    margin: 10,
+    marginVertical: 10,
+    marginHorizontal: 20,
+    // width: 150,
+    // height: 100,
   },
   productImage: {
     padding: 10,

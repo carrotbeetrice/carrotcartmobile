@@ -7,11 +7,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Card, Title, Paragraph, IconButton, Divider} from 'react-native-paper';
-import * as Colours from '_styles/colours';
+import * as Colours from '../../styles/colours';
 import {getItemById} from '../../services/inventory';
 import {addOrDeleteItem} from '../../services/wishlist';
 
-const ProductScreen = ({route}) => {
+const ProductScreen = ({route, navigation}) => {
   const [animating, setAnimating] = React.useState(true);
   const [productInfo, setProductInfo] = React.useState({});
   const {productId} = route.params;
@@ -33,7 +33,14 @@ const ProductScreen = ({route}) => {
     }
   };
 
-  const addToCart = productId => alert(`Item ${productId} added to cart!`);
+  //TODO: Add to cart functionality
+  const addToCart = productId => {
+    console.log(`Adding item ${productId} to cart...`);
+    // console.log('Item info:', productInfo);
+    navigation.navigate('AddToCart', {
+      productInfo: productInfo,
+    });
+  };
 
   React.useEffect(() => {
     getItemById(productId)

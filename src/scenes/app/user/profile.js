@@ -15,11 +15,9 @@ import {Avatar, Caption, Card, Title, Button} from 'react-native-paper';
 import {getProfile} from '../../../services/customer';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [details, setDetails] = React.useState({});
-
-  const toAddressBook = () => navigation.navigate('Address');
 
   React.useEffect(() => {
     getProfile()
@@ -42,6 +40,24 @@ const ProfileScreen = ({navigation}) => {
               <ActivityIndicator />
             ) : (
               <View>
+                <View style={styles.userHeader}>
+                {details.profilephotouri !== null &&
+                  details.profilephotouri !== '' ? (
+                    <Avatar.Image
+                      size={60}
+                      source={{uri: details.profilephotouri}}
+                      style={styles.avatar}
+                    />
+                  ) : (
+                    <Avatar.Icon
+                      icon="account"
+                      size={60}
+                      color={Colours.WHITE}
+                      style={styles.avatar}
+                    />
+                  )}
+                  <Title>{details.fullName}</Title>
+                </View>
                 <View style={styles.profileHeader}>
                   {details.profilephotouri !== null &&
                   details.profilephotouri !== '' ? (
@@ -79,11 +95,7 @@ const ProfileScreen = ({navigation}) => {
                   <Text>Mobile number</Text>
                   <Text>{details.mobileNumber}</Text>
                 </View>
-                <View style={styles.detailsSection}>
-                  {/* <Button onPress={toAddressBook} mode="outlined">
-                    Address Book
-                  </Button> */}
-                </View>
+                <View style={styles.detailsSection}></View>
               </View>
             )}
           </View>
@@ -107,16 +119,31 @@ const styles = StyleSheet.create({
   profile: {
     // flexDirection: 'row',
     // marginTop: 15,
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
   },
-
+  userHeader: {
+    // margin: 10,
+    width: '100%',
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignContent: 'flex-start',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'grey',
+    borderRadius: 15,
+  },
   profileHeader: {
-    // marginVertical: 10,
+    width: '100%',
+    padding: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'flex-start',
     alignItems: 'flex-start',
+    borderWidth: 1,
+    borderColor: 'grey',
+    borderRadius: 15,
   },
   avatar: {
     backgroundColor: Colours.BURNT_SIENNA,

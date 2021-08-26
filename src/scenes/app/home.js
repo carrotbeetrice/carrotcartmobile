@@ -99,10 +99,12 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     backgroundColor: Colours.WHITE,
-    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'grey',
   },
   categoryText: {
     fontSize: 18,
