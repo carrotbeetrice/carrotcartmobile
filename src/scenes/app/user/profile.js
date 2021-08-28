@@ -15,15 +15,17 @@ import {Avatar, Caption, Card, Title, Button} from 'react-native-paper';
 import {getProfile} from '../../../services/customer';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [details, setDetails] = React.useState({});
+
+  const handleTakePhoto = () => navigation.navigate('Camera');
 
   React.useEffect(() => {
     getProfile()
       .then(results => {
         if (results.success) {
-          console.log('Customer data:', results.data);
+          // console.log('Customer data:', results.data);
           setDetails(results.data);
         } else console.debug(results.message);
       })
@@ -41,7 +43,8 @@ const ProfileScreen = () => {
             ) : (
               <View>
                 <View style={styles.userHeader}>
-                {details.profilephotouri !== null &&
+                  <TouchableOpacity onPress={handleTakePhoto}>
+                  {details.profilephotouri !== null &&
                   details.profilephotouri !== '' ? (
                     <Avatar.Image
                       size={60}
@@ -56,6 +59,8 @@ const ProfileScreen = () => {
                       style={styles.avatar}
                     />
                   )}
+                  </TouchableOpacity>
+ 
                   <Title>{details.fullName}</Title>
                 </View>
                 <View style={styles.profileHeader}>

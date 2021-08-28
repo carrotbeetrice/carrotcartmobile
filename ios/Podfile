@@ -14,6 +14,8 @@ target 'carrotcartmobile' do
 
 
 
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
   target 'carrotcartmobileTests' do
     inherit! :complete
     # Pods for testing

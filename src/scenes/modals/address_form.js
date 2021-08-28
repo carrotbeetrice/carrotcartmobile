@@ -7,13 +7,12 @@ import {
   Alert,
 } from 'react-native';
 import {Text, Button, Switch} from 'react-native-paper';
-import ErrorMessage from '../../../components/atoms/ErrorMessage';
-import FormInput from '../../../components/atoms/FormInput';
+import ErrorMessage from '../../components/atoms/ErrorMessage';
+import FormInput from '../../components/atoms/FormInput';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import {BURNT_SIENNA} from '../../../styles/colours';
-import {addNewAddress, updateAddress} from '../../../services/customer';
-
+import {BURNT_SIENNA} from '../../styles/colours';
+import {addNewAddress, updateAddress} from '../../services/customer';
 const newAddressSchema = yup.object().shape({
   label: yup.string().required('Address label is required'),
   address: yup.string().required('Address line is required'),

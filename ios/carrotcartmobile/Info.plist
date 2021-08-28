@@ -37,6 +37,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>message</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>message</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>message</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

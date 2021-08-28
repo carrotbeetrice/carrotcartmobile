@@ -6,8 +6,10 @@ import * as Colors from '../styles/colours';
 import AppNavigator from './AppNavigator';
 import ShopScreen from '../scenes/shop/shop';
 import ProductScreen from '../scenes/shop/product';
-import AddressFormScreen from '../scenes/app/user/address_form';
-import CartFormScreen from '../scenes/shop/cart_form';
+import AddressFormScreen from '../scenes/modals/address_form';
+import CartFormScreen from '../scenes/modals/cart_form';
+import CameraScreen from '../scenes/app/camera';
+import CameraRollScreen from '../scenes/modals/camera_roll';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +21,7 @@ const ShopStack = () => (
         backgroundColor: Colors.BURNT_SIENNA,
       },
       headerTintColor: 'white',
+      headerBackTitle: 'Back',
     }}>
     <Stack.Group>
       <Stack.Screen
@@ -34,9 +37,9 @@ const ShopStack = () => (
         component={ProductScreen}
         options={({route}) => ({
           presentation: route.params.isPreview ? 'modal' : 'card',
-          headerBackTitle: 'Back',
         })}
       />
+      <Stack.Screen name="Camera" component={CameraScreen} />
     </Stack.Group>
     <Stack.Group
       screenOptions={{presentation: 'modal', headerBackTitle: 'Back'}}>
@@ -53,6 +56,13 @@ const ShopStack = () => (
         options={({route}) => ({
           headerTitle: route.params.headerTitle,
         })}
+      />
+      <Stack.Screen
+        name="CameraRoll"
+        component={CameraRollScreen}
+        options={{
+          headerTitle: 'Camera Roll',
+        }}
       />
     </Stack.Group>
   </Stack.Navigator>
