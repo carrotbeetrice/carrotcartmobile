@@ -8,11 +8,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {Card, IconButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Colours from '../../styles/colours';
-import {getWishlist} from '../../services/wishlist';
+import {getWishlist, removeFromWishlist} from '../../services/wishlist';
 
 const WishlistScreen = ({navigation}) => {
   const [animating, setAnimating] = React.useState(true);
@@ -36,18 +37,49 @@ const WishlistScreen = ({navigation}) => {
     };
   }, [wishlist]);
 
-  const onProductPress = productId =>
+  const handleProductPress = productId =>
     navigation.navigate('Product', {
       productId: productId,
       isPreview: true,
     });
 
-  const addToCart = productId => {
-    console.log(`Product ${productId} added to cart!`);
-  };
+  const addToCart = productInfo =>
+    navigation.navigate('CartForm', {
+      productInfo: productInfo,
+      headerTitle: 'Add To Cart',
+    });
 
-  const removeFromWishlist = productId => {
-    console.log(`Product ${productId} removed from wishlist`);
+  const confirmRemoveItem = productId =>
+    Alert.alert(
+      'Deleting item',
+      'Are you sure you want to remove this item from your wishlist?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async () => await handleRemoveFromWishlist(productId),
+          style: 'default',
+        },
+      ],
+    );
+
+  const handleRemoveFromWishlist = async productId => {
+    try {
+      const results = await removeFromWishlist(productId);
+      if (results.success) {
+        let updatedWishlist = wishlist.filter(
+          item => item.productid !== productId,
+        );
+        setWishlist(updatedWishlist);
+      } else {
+        alert(results.message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -66,7 +98,7 @@ const WishlistScreen = ({navigation}) => {
             renderItem={({item}) => (
               <View style={styles.itemCard} key={item.productid}>
                 <TouchableOpacity
-                  onPress={() => onProductPress(item.productid)}>
+                  onPress={() => handleProductPress(item.productid)}>
                   <View style={styles.itemInfo}>
                     <Image
                       style={styles.itemImage}
@@ -86,14 +118,14 @@ const WishlistScreen = ({navigation}) => {
                       icon="cart-plus"
                       color="grey"
                       size={25}
-                      onPress={() => addToCart(item.productid)}
+                      onPress={() => addToCart(item)}
                       style={styles.actionIconButton}
                     />
                     <IconButton
                       icon="delete-outline"
                       color="grey"
                       size={25}
-                      onPress={() => removeFromWishlist(item.productid)}
+                      onPress={() => confirmRemoveItem(item.productid)}
                       style={styles.actionIconButton}
                     />
                   </Card.Actions>

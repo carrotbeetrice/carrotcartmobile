@@ -54,3 +54,21 @@ export const addOrDeleteItem = async (productId, inWishlist) => {
       .catch(err => console.error(err));
   });
 };
+
+export const removeFromWishlist = async productId => {
+  const ax = await createAxiosInstance(SHOPPING_API);
+
+  return new Promise((resolve, reject) => {
+    ax.delete(`/wishlist/${productId}`)
+      .then(response => {
+        if (response.status === 200) {
+          results.success = true;
+        } else {
+          results.success = false;
+          results.message = response.statusText;
+        }
+        return resolve(results);
+      })
+      .catch(err => reject(err));
+  });
+};

@@ -38,7 +38,6 @@ const CartScreen = ({navigation}) => {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Item deletion terminated'),
           style: 'cancel',
         },
         {
