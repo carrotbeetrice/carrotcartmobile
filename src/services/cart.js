@@ -42,6 +42,24 @@ export const addToCart = async (productId, quantity) => {
   });
 };
 
+export const updateCartItem = async (productId, quantity) => {
+  const ax = await createAxiosInstance(SHOPPING_API);
+
+  return new Promise((resolve, reject) => {
+    ax.put(`/cart/${productId}/${quantity}`)
+      .then(response => {
+        if (response.status === 200) {
+          results.success = true;
+        } else {
+          results.success = false;
+          results.message = response.statusText;
+        }
+        return resolve(results);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 export const deleteFromCart = async productId => {
   const ax = await createAxiosInstance(SHOPPING_API);
 

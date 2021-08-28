@@ -34,9 +34,9 @@ const ProductScreen = ({route, navigation}) => {
   };
 
   const addToCart = () => {
-    navigation.navigate('AddToCart', {
+    navigation.navigate('CartForm', {
       productInfo: productInfo,
-      headerTitle: 'Add Item to Cart',
+      headerTitle: 'Add To Cart',
     });
   };
 

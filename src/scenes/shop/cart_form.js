@@ -12,17 +12,11 @@ import {
 } from 'react-native';
 import {Button} from 'react-native-paper';
 import {BURNT_SIENNA} from '../../styles/colours';
-import {addToCart} from '../../services/cart';
+import {addToCart, updateCartItem} from '../../services/cart';
 import {Formik} from 'formik';
 
-// const addItemSchema = yup.object().shape({
-//   quantity: yup
-//     .number()
-//     .required(),
-// });
-
-const AddToCartScreen = ({route, navigation}) => {
-  const {productInfo} = route.params;
+const CartFormScreen = ({route, navigation}) => {
+  const {productInfo, editOrder} = route.params;
   const initialFormValues = {
     quantity: productInfo.quantity ? productInfo.quantity : 1,
   };
@@ -30,24 +24,37 @@ const AddToCartScreen = ({route, navigation}) => {
   const [quantity, setQuantity] = React.useState(initialFormValues.quantity);
   const [animating, setAnimating] = React.useState(false);
 
-  const handleAddToCart = () => {
+  const handleAddorUpdate = async () => {
     setAnimating(true);
-    addToCart(productInfo.productid, quantity)
-      .then(result => {
-        setAnimating(false);
-        if (result.success) {
-          Alert.alert('Success', 'Item successfully added to cart!', [
-            {
-              text: 'OK',
-              onPress: () => navigation.goBack(),
-              style: 'default',
-            },
-          ]);
-        } else {
-          alert(result.message);
-        }
-      })
-      .catch(err => console.error(err));
+    let results = null;
+
+    try {
+      if (editOrder) {
+        results = await updateCartItem(productInfo.productid, quantity);
+      } else {
+        results = await addToCart(productInfo.productid, quantity);
+      }
+
+      setAnimating(false);
+
+      if (results.success) {
+        let successMessage = editOrder
+          ? 'Your order has been successfully updated!'
+          : 'Item successfully added to cart!';
+        Alert.alert('Success', successMessage, [
+          {
+            text: 'OK',
+            onPress: () => navigation.goBack(),
+            style: 'default',
+          },
+        ]);
+      } else {
+        alert(results.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setAnimating(false);
+    }
   };
 
   const decrementQuantity = () => {
@@ -77,9 +84,7 @@ const AddToCartScreen = ({route, navigation}) => {
             </View>
             <Formik
               initialValues={initialFormValues}
-              onSubmit={handleAddToCart}
-              //validationSchema={addItemSchema}>
-            >
+              onSubmit={handleAddorUpdate}>
               {({handleSubmit, setFieldValue}) => (
                 <Fragment>
                   <View style={styles.inputSection}>
@@ -114,7 +119,7 @@ const AddToCartScreen = ({route, navigation}) => {
                       mode="contained"
                       dark
                       color={BURNT_SIENNA}>
-                      Add to Cart
+                      Submit
                     </Button>
                   </View>
                 </Fragment>
@@ -128,7 +133,7 @@ const AddToCartScreen = ({route, navigation}) => {
   );
 };
 
-export default AddToCartScreen;
+export default CartFormScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -7,7 +7,7 @@ import AppNavigator from './AppNavigator';
 import ShopScreen from '../scenes/shop/shop';
 import ProductScreen from '../scenes/shop/product';
 import AddressFormScreen from '../scenes/app/user/address_form';
-import AddToCartScreen from '../scenes/shop/add_to_cart';
+import CartFormScreen from '../scenes/shop/cart_form';
 
 const Stack = createStackNavigator();
 
@@ -48,8 +48,8 @@ const ShopStack = () => (
         })}
       />
       <Stack.Screen
-        name="AddToCart"
-        component={AddToCartScreen}
+        name="CartForm"
+        component={CartFormScreen}
         options={({route}) => ({
           headerTitle: route.params.headerTitle,
         })}

@@ -25,9 +25,10 @@ const CartScreen = ({navigation}) => {
     });
 
   const handleEditOrder = productInfo =>
-    navigation.navigate('AddToCart', {
+    navigation.navigate('CartForm', {
       productInfo: productInfo,
       headerTitle: 'Edit Order',
+      editOrder: true,
     });
 
   const confirmRemoveItem = productId =>
